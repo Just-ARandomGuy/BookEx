@@ -1,3 +1,14 @@
+/* Colors */
+:root {
+    --color-primary: #70ABAF; /* main elements, headers, primary actions */
+    --color-secondary: #767676; /* neutral gray */
+    --color-accent: #FF1053; /* highlights, notifications, use sparingly*/
+    --color-background-light: #F8F9FA;
+    --color-background-dark: #001011;
+    --color-text-dark: #001011;
+    --color-text-light: #FFFFFF;
+}
+
 /* General Reset */
 * {
     margin: 0;
@@ -9,14 +20,15 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    background-color: #f4f4f4;
-    color: #333;
+    background: var(--color-background-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* Header (Banner) */
 header {
-    background: #333;
-    color: white;
+    background: var(--color-primary);
     padding: 10px 20px;
     display: flex;
     flex-direction: column;
@@ -31,12 +43,12 @@ header .nav-container {
 }
 
 header .login span {
+    color: var(--color-text-dark);
     display: flex;
     align-items: center;
     gap: 10px;
     margin-left: auto;
     text-decoration: none;
-    color: white;
 }
 
 header .login button {
@@ -44,7 +56,7 @@ header .login button {
     padding: 5px 15px;
     border: none;
     background: #92BDA3;
-    color: black;
+    color: var(--color-text-dark);
     border-radius: 5px;
     cursor: pointer;
 }
@@ -60,7 +72,7 @@ header .navbar ul {
 header .navbar a,
 header .login a,
 header .login a:visited {
-    color: white;
+    color: var(--color-text-dark);
     text-decoration: none;
 
 }
@@ -73,6 +85,10 @@ header .login a:visited {
 
 /* Main Content */
 
+main.content {
+    background: var(--color-background-light);
+}
+
 .content {
     flex-grow: 1;
     margin-left: 20px;
@@ -83,7 +99,7 @@ header .login a:visited {
 }
 
 .content h2 {
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 .content p {
@@ -94,8 +110,8 @@ header .login a:visited {
 /* Footer */
 
 footer {
-    background: #333;
-    color: white;
+    background: var(--color-primary);
+    color: var(--color-text-dark);
     text-align: center;
     padding: 10px 0;
     margin-top: 20px;
