@@ -1,19 +1,14 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-
-# Create your views here.
-
-from .models import MainMenu
-from .forms import BookForm
-
-from .models import Book
-
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
-
-
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+
+from .models import MainMenu
+from .forms import BookForm
+from .models import Book
 
 
 def index(request):
@@ -29,7 +24,7 @@ def postbook(request):
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            #form.save()
+            # form.save()
             book = form.save(commit=False)
             try:
                 book.username = request.user
@@ -62,6 +57,30 @@ def displaybooks(request):
                   })
 
 
+def booksearch_ajax(request):
+    query = request.GET.get('query', '')
+    books_data = []
+
+    if query:
+        books = Book.objects.filter(
+            Q(username__username__icontains=query) |
+            Q(name__icontains=query)
+        )
+
+    else:
+        books = Book.objects.all()
+
+    for book in books:
+        books_data.append({
+            'id': book.id,
+            'name': book.name,
+            'price': book.price,
+            'username': book.username.username if book.username else ''
+        })
+
+    return JsonResponse({'books': books_data})
+
+
 def book_detail(request, book_id):
     book = Book.objects.get(id=book_id)
 
@@ -72,6 +91,7 @@ def book_detail(request, book_id):
                       'item_list': MainMenu.objects.all(),
                       'book': book
                   })
+
 
 def book_delete(request, book_id):
     book = Book.objects.get(id=book_id)
@@ -104,4 +124,3 @@ def mybooks(request):
                       'item_list': MainMenu.objects.all(),
                       'books': books
                   })
-
