@@ -14,10 +14,10 @@
 		<nav class="navbar">
 			<ul>
 				{% block navbar %}
-				<li><a href="#home">Home</a></li>
-				<li><a href="#about">About</a></li>
-				<li><a href="#services">Services</a></li>
-				<li><a href="#contact">Contact</a></li>
+					<li><a href="#home">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#services">Services</a></li>
+					<li><a href="#contact">Contact</a></li>
 				{% endblock navbar %}
 			</ul>
 		</nav>
@@ -25,13 +25,13 @@
 		<div class="login">
 	        <span style="float: right;">
 	            {% if user.is_authenticated %}
-	               {{ user.username}}
-	               <form action="{% url 'logout' %}?next=/" method="post">
+		            {{ user.username }}
+		            <form action="{% url 'logout' %}?next=/" method="post">
 	                   <button type="submit">Logout</button>
 	                   {% csrf_token %}
 	               </form>
 	            {% else %}
-	               <a href="{% url 'login' %}?next=/">Login</a>
+		            <a href="{% url 'login' %}?next=/"><button>Login</button></a>
 	            {% endif %}
 	        </span>
 		</div>
@@ -45,7 +45,7 @@
 
 <main class="content">
 	{% block content %}
-	<h1>Main Content</h1>
+		<h1>Main Content</h1>
 	{% endblock content %}
 </main>
 </div>
