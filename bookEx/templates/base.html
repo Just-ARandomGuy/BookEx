@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,21 +11,6 @@
 <body>
 <header>
 	<div class="nav-container">
-		<div class="login">
-        <span style="float: right;">
-            {% if user.is_authenticated %}
-               {{ user.username}}
-               <form action="{% url 'logout' %}?next=/" method="post">
-                   <button type="submit">logout</button>
-                   {% csrf_token %}
-               </form>
-            {% else %}
-               Not Logged in
-               <a href="{% url 'login' %}?next=/">login</a>
-            {% endif %}
-        </span>
-		</div>
-
 		<nav class="navbar">
 			<ul>
 				{% block navbar %}
@@ -37,6 +21,20 @@
 				{% endblock navbar %}
 			</ul>
 		</nav>
+
+		<div class="login">
+	        <span style="float: right;">
+	            {% if user.is_authenticated %}
+	               {{ user.username}}
+	               <form action="{% url 'logout' %}?next=/" method="post">
+	                   <button type="submit">Logout</button>
+	                   {% csrf_token %}
+	               </form>
+	            {% else %}
+	               <a href="{% url 'login' %}?next=/">Login</a>
+	            {% endif %}
+	        </span>
+		</div>
 	</div>
 
 	<div class="banner">
