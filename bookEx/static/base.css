@@ -17,50 +17,41 @@ body {
 header {
     background: #333;
     color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.banner h1 {
-    margin: 0;
-}
-
-/* Container for Sidebar and Content */
-.container {
+    padding: 10px 20px;
     display: flex;
-    min-height: 80vh;
-    padding: 20px;
+    flex-direction: column;
 }
 
-/* Sidebar (Main Menu) */
-.sidebar {
-    width: 200px;
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    flex-shrink: 0;
+header .nav-container {
+    
 }
 
-.sidebar ul {
-    list-style-type: none;
+header .navbar ul {
+    display: flex;
+    list-style: none;
     padding: 0;
+    margin: 0;
+    gap: 20px;
+    justify-content: flex-end;
 }
 
-.sidebar ul li {
-    margin: 10px 0;
+header .navbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.sidebar ul li a {
+header .navbar a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
 }
 
-.sidebar ul li a:hover {
-    text-decoration: underline;
+.banner img {
 }
 
 /* Main Content */
+
 .content {
     flex-grow: 1;
     margin-left: 20px;
@@ -80,6 +71,7 @@ header {
 }
 
 /* Footer */
+
 footer {
     background: #333;
     color: white;
