@@ -11,13 +11,15 @@
 <body>
 <header>
 	<div class="nav-container">
+		<div class="logo">
+			<a href="/">
+				<h1>BookEx</h1>
+			</a>
+		</div>
+
 		<nav class="navbar">
 			<ul>
 				{% block navbar %}
-					<li><a href="#home">Home</a></li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#services">Services</a></li>
-					<li><a href="#contact">Contact</a></li>
 				{% endblock navbar %}
 			</ul>
 		</nav>
@@ -50,7 +52,21 @@
 </main>
 
 <footer>
-	<p>&copy; 2025 My Web Layout</p>
+	<div class="footer-container">
+		<div class="footer-grid">
+			<div class="footer-col">
+				<h3>Contact</h3>
+				<ul class="footer-links">
+					<li> 123 Main Street, City</li>
+					<li>(123) 456-7890</li>
+					<li> info@bookex.com</li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<p>&copy; {% now "Y" %} BookEx. All rights reserved.</p>
+		</div>
+	</div>
 </footer>
 </body>
 </html>
