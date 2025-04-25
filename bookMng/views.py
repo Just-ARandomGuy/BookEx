@@ -105,9 +105,3 @@ def mybooks(request):
                       'books': books
                   })
 
-
-
-def favorite_list(request):
-
-    favorites = ['Book A', 'Book B', 'Book C']
-    return render(request, 'favorite_list.html', {'favorites': favorites})
