@@ -1,29 +1,57 @@
 {% extends "base.html" %}
+
 {% load static %}
 
 {% block navbar %}
-{% for item in item_list %}
-<li>
-	<a href="{{ item.link }}"> {{ item.item }} </a>
-</li>
-{% endfor %}
+	{% for item in item_list %}
+		<li>
+			<a href="{{ item.link }}"> {{ item.item }} </a>
+		</li>
+	{% endfor %}
 {% endblock navbar %}
-
 {% block content %}
-<h1>Post Book</h1>
-{% if submitted %}
-<h1> Post Book Successfully! </h1>
-{% else %}
-<form action="" enctype="multipart/form-data" method="post" novalidate>
-	<table>
-		{{ form.as_table }}
-		<tr>
-			<td>
-				<input type="submit" value="Submit">
-			</td>
-		</tr>
-	</table>
-	{% csrf_token %}
-</form>
-{% endif %}
+	<h1>Post Book</h1>
+	{% if submitted %}
+		<h1> Post Book Successfully! </h1>
+	{% else %}
+		<form action="" enctype="multipart/form-data" method="post" novalidate>
+			{% csrf_token %}
+			{% if form.non_field_errors %}
+				<ul class="errorList">
+					{% for error in form.non_field_errors %}
+						<li>{{ error }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+
+			<table id="postbook-form">
+				{% for field in form %}
+					<tr>
+						<th>
+							<label for="{{ field.id_for_label }}" {% if field.field.required %} class="required" {% endif %}>
+								{{ field.label }}
+							</label>
+						</th>
+						<td {% if field.errors %}class="field-with-errors"{% endif %}>
+							{{ field }}
+
+							{% if field.errors %}
+								<ul class="errorList">
+									{% for error in field.errors %}
+										<li>{{ error }}</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" value="Submit">
+					</td>
+				</tr>
+			</table>
+		</form>
+	{% endif %}
 {% endblock content %}

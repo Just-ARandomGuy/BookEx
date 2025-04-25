@@ -160,9 +160,9 @@ textarea:focus {
     box-shadow: inset 0 1px 2px rgba(var(--color-background-dark)), 0 0 0 0.2rem rgba(var(--color-accent), 0.25);
 }
 
-.required label:after,
 label.required:after {
-    content: " *";
+    content: " * ";
+    font-size: 0.75em;
     color: red;
 }
 
@@ -170,8 +170,49 @@ label.required:after {
     max-width: 275px;
 }
 
-/* Footer */
+#postbook-form th,
+#postbook-form td {
+    vertical-align: baseline;
+    padding: 0.5em 0 0.5em 0;
+}
 
+.errorList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.25em 0 0.5em 0;
+}
+
+.errorList li {
+    color: var(--color-accent);
+    font-size: 0.9em;
+}
+
+td.field-with-errors input,
+td.field-with-errors textarea,
+td.field-with-errors select {
+    border-color: var(--color-accent);
+}
+
+td.field-with-errors input:focus,
+td.field-with-errors textarea:focus,
+td.field-with-errors select:focus {
+    border-color: var(--color-accent);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
+}
+
+/* margin reset for postbook table form */
+#postbook-form input[type="text"],
+#postbook-form input[type="email"],
+#postbook-form input[type="password"],
+#postbook-form input[type="search"],
+#postbook-form input[type="tel"],
+#postbook-form input[type="url"],
+#postbook-form input[type="number"],
+#postbook-form textarea {
+    margin-bottom: 0;
+}
+
+/* Footer */
 footer {
     background: var(--color-background-dark);
     color: var(--color-text-light);
