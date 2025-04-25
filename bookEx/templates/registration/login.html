@@ -18,9 +18,7 @@
              </td>
           </tr>
       </table>
-        <p>
-            To register
-        </p>
+        <p>To register <a href="{% url 'register' %}?next=/">Click here</a></p>
 
       <input type="hidden" name="next" value="{{ next }}" />
       {% csrf_token %}

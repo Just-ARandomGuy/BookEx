@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from flask import redirect
 
 # Create your views here.
 
-from .models import MainMenu
+from .models import MainMenu, ShoppingCart, CartItem
 from .forms import BookForm
 
 from .models import Book
@@ -48,7 +49,6 @@ def postbook(request):
                       'item_list': MainMenu.objects.all(),
                       'submitted': submitted
                   })
-
 
 def displaybooks(request):
     books = Book.objects.all()
@@ -105,3 +105,32 @@ def mybooks(request):
                       'books': books
                   })
 
+
+def displayCart(request):
+    cart1 = ShoppingCart.objects.get(username = request.user)
+    cart_items = CartItem.objects.filter(cart = cart1)
+    total = 0;
+    for cart_item in cart_items:
+        total += cart_item.getPrice();
+    return render(request,
+                  'bookMng/displayCart.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'cart_items': cart_items,
+                      'total': total
+                  })
+
+def addtocart(request, book_id):
+    if request.method == 'POST':
+        book = Book.objects.get(id=book_id)
+        cart, created = ShoppingCart.objects.get_or_create(username=request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+    return render(request,
+                  'bookMng/displaybooks.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'books': Book.objects.all()
+                  })

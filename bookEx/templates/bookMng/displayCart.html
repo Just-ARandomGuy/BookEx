@@ -10,7 +10,7 @@
 {% endblock sidenav %}
 
 {% block content %}
-   <h1>Display Books</h1>
+   <h1>Display Cart</h1>
    <table border="2" >
       <tr>
           <th>
@@ -22,20 +22,23 @@
           <th>
               User Name
           </th>
+          <th>Quantity</th>
       </tr>
-   {% for book in books %}
+   {% for cart_item in cart_items %}
        <tr>
          <td>
-        <a href="book_detail/{{ book.id }}">  {{ book.name }} </a>
+        <a href="book_detail/{{ cart_item.id }}">  {{ cart_item.item.name }} </a>
          </td>
          <td>
-            {{ book.price }}
+            {{ cart_item.item.price }}
          </td>
           <td>
-            {{ book.username }}
+            {{ cart_item.item.username }}
          </td>
-          
+           <td>{{cart_item.quantity}}</td>
       </tr>
    {% endfor %}
+
    </table>
+  <p>Total = {{total}}</p>
 {% endblock content %}
