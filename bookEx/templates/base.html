@@ -1,72 +1,101 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>BookEx</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 	<link rel="stylesheet" href="{% static 'base.css' %}" type="text/css">
+	<title>{% block title %}BookEx{% endblock %}</title>
 </head>
 <body>
-<header>
-	<div class="nav-container">
-		<div class="logo">
+<div class="sidebar">
+	<div class="logo-details">
+		<i class="fas fa-cubes icon"></i>
+		<div class="logo_name">BookEx</div>
+		<i class="fas fa-adjust" id="theme-toggle"></i>
+	</div>
+	<ul class="nav-list">
+		{% comment %}
+            TODO: replace list with MainMenu Model
+        {% endcomment %}
+		<li>
 			<a href="/">
-				<h1>BookEx</h1>
+				<i class="fas fa-th-large"></i>
+				<span class="links_name">Dashboard</span>
 			</a>
-		</div>
+			<span class="tooltip">Dashboard</span>
+		</li>
+		<li class="{% block nav_postbook_active %}{% endblock %}">
+			<a href="{% url 'postbook' %}">
+				<i class="fas fa-plus-square"></i>
+				<span class="links_name">Post Book</span>
+			</a>
+			<span class="tooltip">Post Book</span>
+		</li>
+		<li class="{% block nav_displaybooks_active %}{% endblock %}">
+			<a href="{% url 'displaybooks' %}">
+				<i class="fas fa-book-open"></i>
+				<span class="links_name">Display Books</span>
+			</a>
+			<span class="tooltip">Display Books</span>
+		</li>
+		<li class="{% block nav_mybooks_active %}{% endblock %}">
+			<a href="{% url 'mybooks' %}">
+				<i class="fas fa-address-book"></i>
+				<span class="links_name">My Books</span>
+			</a>
+			<span class="tooltip">My Books</span>
+		</li>
+		<li>
+			<a href="#">
+				<i class="fas fa-shopping-cart"></i>
+				<span class="links_name">Order</span>
+			</a>
+			<span class="tooltip">Order</span>
+		</li>
+		<li>
+			<a href="#">
+				<i class="fas fa-heart"></i>
+				<span class="links_name">Saved</span>
+			</a>
+			<span class="tooltip">Saved</span>
+		</li>
 
-		<nav class="navbar">
-			<ul>
-				{% block navbar %}
-				{% endblock navbar %}
-			</ul>
-		</nav>
-
-		<div class="login">
-	        <span style="float: right;">
-	            {% if user.is_authenticated %}
-		            {{ user.username }}
-		            <form action="{% url 'logout' %}?next=/" method="post">
-	                   <button type="submit">Logout</button>
-	                   {% csrf_token %}
-	               </form>
-	            {% else %}
-		            <a href="{% url 'login' %}?next=/"><button>Login</button></a>
-	            {% endif %}
-	        </span>
-		</div>
-	</div>
-
-	<div class="banner">
-		<img src="{% static 'bookshelf.png' %}" height="120"/>
-	</div>
-</header>
-
-
-<main class="content">
-	{% block content %}
-		<h1>Main Content</h1>
-	{% endblock content %}
-</main>
-
-<footer>
-	<div class="footer-container">
-		<div class="footer-grid">
-			<div class="footer-col">
-				<h3>Contact</h3>
-				<ul class="footer-links">
-					<li> 123 Main Street, City</li>
-					<li>(123) 456-7890</li>
-					<li> info@bookex.com</li>
-				</ul>
+		<li class="profile">
+			<div class="profile-details">
+				<img src="{% static 'default_avatar.svg' %}" alt="profile image">
+				<div class="name_job">
+					<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
+					<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
+				</div>
 			</div>
-		</div>
-		<div class="footer-bottom">
-			<p>&copy; {% now "Y" %} BookEx. All rights reserved.</p>
-		</div>
+			{% if user.is_authenticated %}
+				<form action="{% url 'logout' %}?next=/" method="post" class="logout-form">
+					{% csrf_token %}
+					<button type="submit" id="log_out" class="logout-button">
+						<i class="fas fa-sign-out-alt"></i>
+					</button>
+					<span class="tooltip">Logout</span>
+				</form>
+			{% else %}
+				<a href="{% url 'login' %}?next={{ request.path }}" id="log_in" class="login-link">
+					<i class="fas fa-sign-in-alt"></i>
+					<span class="tooltip">Login</span>
+				</a>
+			{% endif %}
+		</li>
+	</ul>
+</div>
+
+<section class="home-section">
+	<div class="text">{% block page_title %}Dashboard{% endblock %}</div>
+	<div class="main-content-area">
+		{% block content %}
+			<p>Welcome to the main content area.</p>
+		{% endblock content %}
 	</div>
-</footer>
+</section>
+
 </body>
 </html>
