@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
@@ -91,26 +92,36 @@ def booksearch_ajax(request):
 
 
 def book_detail(request, book_id):
-    book = Book.objects.get(id=book_id)
+    try:
+        book = Book.objects.get(id=book_id)
+        try:
+            book.pic_path = book.picture.url
+        except ValueError:
+            book.pic_path = None
+    except Book.DoesNotExist:
+        from django.http import Http404
+        raise Http404("Book does not exist")
 
-    book.pic_path = book.picture.url[14:]
-    return render(request,
-                  'bookMng/book_detail.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'book': book
-                  })
+    context = {
+        'book': book,
+        'active_nav_item': 'displaybooks'
+    }
+    return render(request, 'bookMng/book_detail.html', context)
 
 
 def book_delete(request, book_id):
-    book = Book.objects.get(id=book_id)
-    book.delete()
+    book = get_object_or_404(Book, id=book_id, username=request.user)
 
-    return render(request,
-                  'bookMng/book_delete.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                  })
+    if request.method == 'POST':
+        book_name = book.name
+        book.delete()
+        messages.success(request, f"Book '{book_name}' deleted successfully.")
+        return redirect('mybooks')
+    else:
+        book_name = book.name
+        book.delete()
+        messages.success(request, f"Book '{book_name}' deleted successfully.")
+        return redirect('mybooks')
 
 
 class Register(CreateView):
@@ -121,15 +132,3 @@ class Register(CreateView):
     def form_valid(self, form):
         form.save()
         return HttpResponseRedirect(self.success_url)
-
-
-def mybooks(request):
-    books = Book.objects.filter(username=request.user)
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/mybooks.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books
-                  })
