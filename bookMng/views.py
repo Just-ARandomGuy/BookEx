@@ -94,10 +94,7 @@ def booksearch_ajax(request):
 def book_detail(request, book_id):
     try:
         book = Book.objects.get(id=book_id)
-        try:
-            book.pic_path = book.picture.url
-        except ValueError:
-            book.pic_path = None
+
     except Book.DoesNotExist:
         from django.http import Http404
         raise Http404("Book does not exist")

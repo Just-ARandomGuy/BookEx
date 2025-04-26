@@ -5,3 +5,7 @@ venv/
 env/
 .venv/
 bookEx/local_settings.py
+bookEx/static/uploads
+bookEx/media/
+.idea/
+db.sqlite3
