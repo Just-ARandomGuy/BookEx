@@ -1,57 +1,53 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block navbar %}
-{% for item in item_list %}
-<li>
-	<a href="{{ item.link }}"> {{ item.item }} </a>
-</li>
-{% endfor %}
-{% endblock navbar %}
+{% block title %}Display Books{% endblock %}
+
+{% block page_title %}Display Books{% endblock %}
 
 {% block content %}
-<h1>Display Books</h1>
+	<h1>Display Books</h1>
 
-<form id="searchForm">
-	<input type="text"
-	       id="searchInput"
-	       placeholder="Search Books..."
-	       data-search-url="{% url 'booksearch_ajax' %}"
-	>
+	<form id="searchForm">
+		<input type="text"
+		       id="searchInput"
+		       placeholder="Search Books..."
+		       data-search-url="{% url 'booksearch_ajax' %}"
+		>
 
-</form>
+	</form>
 
-<table border="2">
-	<thead>
-	<tr>
-		<th>
-			Book Name
-		</th>
-		<th>
-			Book Price
-		</th>
-		<th>
-			User Name
-		</th>
-	</tr>
-	</thead>
-	<tbody id="bookTableBody">
-	{% for book in books %}
-	<tr>
-		<td>
-			<a href="book_detail/{{ book.id }}"> {{ book.name }} </a>
-		</td>
-		<td>
-			{{ book.price }}
-		</td>
-		<td>
-			{{ book.username.username }}
-		</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-</table>
+	<table border="2">
+		<thead>
+		<tr>
+			<th>
+				Book Name
+			</th>
+			<th>
+				Book Price
+			</th>
+			<th>
+				User Name
+			</th>
+		</tr>
+		</thead>
+		<tbody id="bookTableBody">
+		{% for book in books %}
+			<tr>
+				<td>
+					<a href="book_detail/{{ book.id }}"> {{ book.name }} </a>
+				</td>
+				<td>
+					{{ book.price }}
+				</td>
+				<td>
+					{{ book.username.username }}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
 
-<script src="{% static 'bookSearch.js' %}"></script>
+	<script src="{% static 'bookSearch.js' %}"></script>
 
 {% endblock content %}

@@ -6,17 +6,15 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 
-from .models import MainMenu
 from .forms import BookForm
 from .models import Book
 
 
 def index(request):
-    return render(request,
-                  'bookMng/index.html',
-                  {
-                      'item_list': MainMenu.objects.all()
-                  })
+    context = {
+        'active_nav_item': 'index'
+    }
+    return render(request, 'bookMng/index.html', context)
 
 
 def postbook(request):
@@ -24,7 +22,6 @@ def postbook(request):
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            # form.save()
             book = form.save(commit=False)
             try:
                 book.username = request.user
@@ -36,25 +33,37 @@ def postbook(request):
         form = BookForm()
         if 'submitted' in request.GET:
             submitted = True
-    return render(request,
-                  'bookMng/postbook.html',
-                  {
-                      'form': form,
-                      'item_list': MainMenu.objects.all(),
-                      'submitted': submitted
-                  })
+
+    context = {
+        'form': form,
+        'submitted': submitted,
+        'active_nav_item': 'postbook'
+    }
+    return render(request, 'bookMng/postbook.html', context)
 
 
 def displaybooks(request):
     books = Book.objects.all()
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/displaybooks.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books
-                  })
+
+    context = {
+        'books': books,
+        'active_nav_item': 'displaybooks'
+    }
+    return render(request, 'bookMng/displaybooks.html', context)
+
+
+def mybooks(request):
+    if not request.user.is_authenticated:
+        from django.shortcuts import redirect
+        return redirect('login')
+
+    books = Book.objects.filter(username=request.user)
+
+    context = {
+        'books': books,
+        'active_nav_item': 'mybooks',
+    }
+    return render(request, 'bookMng/mybooks.html', context)
 
 
 def booksearch_ajax(request):

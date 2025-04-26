@@ -15,52 +15,17 @@
 		<div class="logo_name">BookEx</div>
 		<i class="fas fa-adjust" id="theme-toggle"></i>
 	</div>
+
 	<ul class="nav-list">
-		{% comment %}
-            TODO: replace list with MainMenu Model
-        {% endcomment %}
-		<li>
-			<a href="/">
-				<i class="fas fa-th-large"></i>
-				<span class="links_name">Dashboard</span>
-			</a>
-			<span class="tooltip">Dashboard</span>
-		</li>
-		<li class="{% block nav_postbook_active %}{% endblock %}">
-			<a href="{% url 'postbook' %}">
-				<i class="fas fa-plus-square"></i>
-				<span class="links_name">Post Book</span>
-			</a>
-			<span class="tooltip">Post Book</span>
-		</li>
-		<li class="{% block nav_displaybooks_active %}{% endblock %}">
-			<a href="{% url 'displaybooks' %}">
-				<i class="fas fa-book-open"></i>
-				<span class="links_name">Display Books</span>
-			</a>
-			<span class="tooltip">Display Books</span>
-		</li>
-		<li class="{% block nav_mybooks_active %}{% endblock %}">
-			<a href="{% url 'mybooks' %}">
-				<i class="fas fa-address-book"></i>
-				<span class="links_name">My Books</span>
-			</a>
-			<span class="tooltip">My Books</span>
-		</li>
-		<li>
-			<a href="#">
-				<i class="fas fa-shopping-cart"></i>
-				<span class="links_name">Order</span>
-			</a>
-			<span class="tooltip">Order</span>
-		</li>
-		<li>
-			<a href="#">
-				<i class="fas fa-heart"></i>
-				<span class="links_name">Saved</span>
-			</a>
-			<span class="tooltip">Saved</span>
-		</li>
+		{% for item in sidebar_items %}
+			<li class="{% if item.url_name == active_nav_item %}active{% endif %}">
+				<a href="{{ item.url }}">
+					<i class="{{ item.icon_class }}"></i>
+					<span class="links_name">{{ item.name }}</span>
+				</a>
+				<span class="tooltip">{{ item.tooltip }}</span>
+			</li>
+		{% endfor %}
 
 		<li class="profile">
 			<div class="profile-details">

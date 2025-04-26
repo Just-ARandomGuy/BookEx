@@ -15,7 +15,8 @@
     --text-color-light: #E4E9F7; /* text color on dark background */
     --text-color-dark: #0E141B; /* text color on light background */
     --hover-light-bg: #FFF; /* background color for hover items */
-    --active-bg-color: #201E35; /* active background color */
+    --active-bg-color: #357985; /* active background color */
+    --active-hover-bg-color: #5AAEBD; /* active background color for hover */
     --sidebar-width: 260px;
 }
 
@@ -162,7 +163,7 @@ body {
 }
 
 .sidebar li.active a:hover {
-    background: var(--active-bg-color);
+    background: var(--active-hover-bg-color);
     color: var(--text-color-light);
 }
 
@@ -257,7 +258,7 @@ body {
 
 .main-content-area {
     color: var(--text-color-dark);
-    padding: 15px;
+    padding: 30px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -312,7 +313,7 @@ body {
 }
 
 .main-content-area th {
-    background-color: #f2f2f2;
+    background-color: #fff;
     color: var(--text-color-dark);
 }
 
@@ -360,4 +361,8 @@ body {
 .main-content-area td.field-with-errors select:focus {
     border-color: #FF1053;
     box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
+}
+
+#searchForm input[type="text"] {
+    margin: 1em 0 1em 0;
 }

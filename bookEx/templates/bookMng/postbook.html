@@ -2,13 +2,10 @@
 
 {% load static %}
 
-{% block navbar %}
-	{% for item in item_list %}
-		<li>
-			<a href="{{ item.link }}"> {{ item.item }} </a>
-		</li>
-	{% endfor %}
-{% endblock navbar %}
+{% block title %}Post Book{% endblock %}
+
+{% block page_title %}Post Book{% endblock %}
+
 {% block content %}
 	<h1>Post Book</h1>
 	{% if submitted %}
