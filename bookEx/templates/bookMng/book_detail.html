@@ -10,7 +10,7 @@
 	<table class="book-detail-table">
 		<thead>
 		<tr>
-			<th> Book Picture</th>
+			<th> Book Cover</th>
 			<th> Book Name</th>
 			<th> Book Price</th>
 			<th> User</th>
@@ -33,7 +33,7 @@
 	{% if request.user == book.username %}
 		<p class="back-link"></p><a href="{% url 'mybooks' %}"> « Back to My Books </a>
 	{% endif %}
-	
+
 	<p class="back-link"><a href="{% url 'displaybooks' %}"> « Back to All Books </a></p>
 
 

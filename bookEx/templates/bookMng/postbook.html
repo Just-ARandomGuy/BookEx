@@ -8,47 +8,44 @@
 
 {% block content %}
 	<h1>Post Book</h1>
-	{% if submitted %}
-		<h1> Post Book Successfully! </h1>
-	{% else %}
-		<form action="" enctype="multipart/form-data" method="post" novalidate>
-			{% csrf_token %}
-			{% if form.non_field_errors %}
-				<ul class="errorList">
-					{% for error in form.non_field_errors %}
-						<li>{{ error }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
 
-			<table id="postbook-form">
-				{% for field in form %}
-					<tr>
-						<th>
-							<label for="{{ field.id_for_label }}" {% if field.field.required %} class="required" {% endif %}>
-								{{ field.label }}
-							</label>
-						</th>
-						<td {% if field.errors %}class="field-with-errors"{% endif %}>
-							{{ field }}
-
-							{% if field.errors %}
-								<ul class="errorList">
-									{% for error in field.errors %}
-										<li>{{ error }}</li>
-									{% endfor %}
-								</ul>
-							{% endif %}
-						</td>
-					</tr>
+	<form action="" enctype="multipart/form-data" method="post" novalidate>
+		{% csrf_token %}
+		{% if form.non_field_errors %}
+			<ul class="errorList">
+				{% for error in form.non_field_errors %}
+					<li>{{ error }}</li>
 				{% endfor %}
+			</ul>
+		{% endif %}
+
+		<table id="postbook-form">
+			{% for field in form %}
 				<tr>
-					<td></td>
-					<td>
-						<input type="submit" value="Submit">
+					<th>
+						<label for="{{ field.id_for_label }}" {% if field.field.required %} class="required" {% endif %}>
+							{{ field.label }}
+						</label>
+					</th>
+					<td {% if field.errors %}class="field-with-errors"{% endif %}>
+						{{ field }}
+
+						{% if field.errors %}
+							<ul class="errorList">
+								{% for error in field.errors %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
 					</td>
 				</tr>
-			</table>
-		</form>
-	{% endif %}
+			{% endfor %}
+			<tr>
+				<td></td>
+				<td>
+					<input type="submit" value="Submit">
+				</td>
+			</tr>
+		</table>
+	</form>
 {% endblock content %}

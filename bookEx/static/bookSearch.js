@@ -24,8 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         const bookName = book.name;
                         const bookPrice = book.price;
                         const bookUserName = book.username;
+                        const bookPictureUrl = book.picture_url;
+                        const bookPicture = bookPictureUrl ? `<img src="${bookPictureUrl}" width="100" alt="Cover for ${bookName}"/>` : '';
                         const row = `
                         <tr>
+                            <td>${bookPicture}</td>
                             <td><a href="book_detail/${bookId}">${bookName}</a></td>
                             <td>${bookPrice}</td>
                             <td>${bookUserName}</td>

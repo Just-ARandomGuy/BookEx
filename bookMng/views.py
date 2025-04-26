@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect
 
 from .forms import BookForm
 from .models import Book
@@ -20,6 +21,13 @@ def index(request):
 
 def postbook(request):
     submitted = False
+
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to post books.')
+        login_url = reverse('login')
+        postbook_url = reverse('postbook')
+        return redirect(f'{login_url}?next={postbook_url}')
+
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
@@ -29,15 +37,13 @@ def postbook(request):
             except Exception:
                 pass
             book.save()
-            return HttpResponseRedirect('/postbook?submitted=True')
+            messages.success(request, 'Book added successfully.')
+            return redirect('mybooks')
     else:
         form = BookForm()
-        if 'submitted' in request.GET:
-            submitted = True
 
     context = {
         'form': form,
-        'submitted': submitted,
         'active_nav_item': 'postbook'
     }
     return render(request, 'bookMng/postbook.html', context)
@@ -54,15 +60,17 @@ def displaybooks(request):
 
 
 def mybooks(request):
+    # technically not needed anymore since My Books is hidden unless user is logged in
     if not request.user.is_authenticated:
-        from django.shortcuts import redirect
         return redirect('login')
 
     books = Book.objects.filter(username=request.user)
+    submitted_flag = request.GET.get('submitted') == 'True'
 
     context = {
         'books': books,
         'active_nav_item': 'mybooks',
+        'submitted': submitted_flag,
     }
     return render(request, 'bookMng/mybooks.html', context)
 
@@ -85,7 +93,8 @@ def booksearch_ajax(request):
             'id': book.id,
             'name': book.name,
             'price': book.price,
-            'username': book.username.username if book.username else ''
+            'username': book.username.username if book.username else '',
+            'picture_url': book.picture.url if book.picture else '',
         })
 
     return JsonResponse({'books': books_data})
@@ -124,8 +133,9 @@ def book_delete(request, book_id):
 class Register(CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy('register-success')
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         form.save()
-        return HttpResponseRedirect(self.success_url)
+        messages.success(self.request, 'Registration successful. Please log in.')
+        return super().form_valid(form)

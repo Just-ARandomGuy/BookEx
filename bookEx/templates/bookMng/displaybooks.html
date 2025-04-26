@@ -20,33 +20,25 @@
 	<table>
 		<thead>
 		<tr>
-			<th>
-				Book Name
-			</th>
-			<th>
-				Book Price
-			</th>
-			<th>
-				User Name
-			</th>
+			<th>Book Cover</th>
+			<th>Book Name</th>
+			<th>Book Price</th>
+			<th>User Name</th>
 		</tr>
 		</thead>
 		<tbody id="bookTableBody">
 		{% for book in books %}
 			<tr>
-				<td>
-					<a href="book_detail/{{ book.id }}"> {{ book.name }} </a>
-				</td>
-				<td>
-					{{ book.price }}
-				</td>
-				<td>
-					{{ book.username.username }}
-				</td>
+				<td><img src="{{ book.picture.url }}" width="100" alt="Cover for {{ book.name }}"/></td>
+				<td><a href="book_detail/{{ book.id }}"> {{ book.name }} </a></td>
+				<td>{{ book.price }}</td>
+				<td>{{ book.username.username }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 	</table>
+
+	<p class="back-link"><a href="{% url 'mybooks' %}" class="button"> View my Books </a></p>
 
 	<script src="{% static 'bookSearch.js' %}"></script>
 

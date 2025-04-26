@@ -298,6 +298,51 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(14, 20, 27, 0.25);
 }
 
+/* success and errors */
+.messages li.success {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid green;
+    background-color: #e6ffed;
+    color: #006400;
+}
+
+.messages li.error {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid red;
+    background-color: #ffe6e6;
+    color: #8b0000;
+}
+
+/* button styling */
+button[type="submit"],
+input[type="submit"],
+.button {
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+.button:hover {
+    background-color: var(--active-bg-color);
+    transform: scale(1.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* table styling */
 .main-content-area table {
     width: 100%;
