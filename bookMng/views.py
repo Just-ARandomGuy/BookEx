@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from flask import redirect
-from .models import MainMenu, ShoppingCart, CartItem
+from .models import ShoppingCart, CartItem
 
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
