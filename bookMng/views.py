@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
-from flask import redirect
+
 from .models import ShoppingCart, CartItem
 
 from django.views.generic.edit import CreateView
@@ -150,7 +150,7 @@ class Register(CreateView):
 
 
 def displayCart(request):
-    cart1 = ShoppingCart.objects.get(username=request.user)
+    cart1, created = ShoppingCart.objects.get_or_create(username=request.user)
     cart_items = CartItem.objects.filter(cart=cart1)
     total = 0;
     for cart_item in cart_items:
@@ -158,7 +158,6 @@ def displayCart(request):
     return render(request,
                   'bookMng/displayCart.html',
                   {
-                      'item_list': MainMenu.objects.all(),
                       'cart_items': cart_items,
                       'total': total
                   })
@@ -175,6 +174,5 @@ def addtocart(request, book_id):
     return render(request,
                   'bookMng/displaybooks.html',
                   {
-                      'item_list': MainMenu.objects.all(),
                       'books': Book.objects.all()
                   })
