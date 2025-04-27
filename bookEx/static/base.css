@@ -1,4 +1,3 @@
-/* poppins google font*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 * {
@@ -9,25 +8,69 @@
 }
 
 :root {
-    --primary-color: #0E141B; /*  sidebar background color */
-    --secondary-color: #1D232C; /* profile background color */
-    --accent-color: #E4E9F7; /* light background for main content */
-    --text-color-light: #E4E9F7; /* text color on dark background */
-    --text-color-dark: #0E141B; /* text color on light background */
-    --hover-light-bg: #FFF; /* background color for hover items */
-    --active-bg-color: #357985; /* active background color */
-    --active-hover-bg-color: #5AAEBD; /* active background color for hover */
+    --primary-color: #0e141b; /* sidebar background */
+    --secondary-color: #1d232c; /* buttons */
+    --profile-background: #1d232c; /* profile background color */
+    --accent-color: #e4e9f7; /* main content background */
+    --text-color-light: #e4e9f7; /* text on dark background */
+    --text-color-dark: #0e141b; /* text on light background */
+    --hover-light-bg: #fff; /* background color for hover items (light) */
+    --hover-dark-text: #0e141b; /* text color on hover (light) */
+    --active-bg-color: #357985; /* active sidebar item background */
+    --active-hover-bg-color: #5AAEBD; /* active sidebar item hover background */
+    --input-bg-color: #fff; /* input field background */
+    --input-border-color: #ccc; /* input field border */
+    --table-border-color: #ddd; /* table border color */
+    --table-header-bg: #f9f9f9; /* table header background */
+    --card-bg-color: #fff; /* content area card background */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* box shadow color */
+    --error-color: #ff1053; /* error text color */
+    --error-bg-color: #ffe6e6; /* error message background */
+    --error-border-color: red; /* error message border */
+    --success-color: #006400; /* success text color */
+    --success-bg-color: #e6ffed; /* success message background */
+    --success-border-color: green; /* success message border */
+
     --sidebar-width: 260px;
+    --transition-speed: 0.5s;
+    --transition-speed-fast: 0.3s;
 }
+
+/* dark theme variables */
+body.dark-mode {
+    --primary-color: #1d232c; /* lighter dark */
+    --secondary-color: #357985; /* accent from light as secondary */
+    --profile-background: #151a20; /* profile background color */
+    --accent-color: #121212; /* dark grey for main background */
+    --text-color-light: #e4e9f7; /* stays light */
+    --text-color-dark: #e0e0e0; /* light grey for text on dark */
+    --hover-light-bg: #333; /* darker hover background */
+    --hover-dark-text: #e4e9f7; /* light text on hover */
+    --active-bg-color: #357985; /* darker active background */
+    --active-hover-bg-color: #5AAEBD; /* lighter active hover */
+    --input-bg-color: #2a2a2a; /* dark input background */
+    --input-border-color: #444; /* darker border */
+    --table-border-color: #444; /* darker table border */
+    --table-header-bg: #252525; /* dark table header */
+    --card-bg-color: #1e1e1e; /* dark card background */
+    --shadow-color: rgba(255, 255, 255, 0.05); /* lighter shadow for dark */
+    --error-color: #ff8a8a; /* lighter error red */
+    --error-bg-color: #4d1f1f; /* dark error background */
+    --error-border-color: #a71d1d; /* dark error border */
+    --success-color: #90ee90; /* lighter green */
+    --success-bg-color: #1e4d2e; /* dark success background */
+    --success-border-color: #2f844b; /* dark success border */
+}
+
 
 body {
     position: relative;
     min-height: 100vh;
     width: 100%;
     background-color: var(--accent-color);
+    transition: background-color var(--transition-speed-fast) ease;
 }
 
-/* sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -37,7 +80,7 @@ body {
     background: var(--primary-color);
     padding: 6px 14px 20px;
     z-index: 99;
-    transition: all 0.5s ease;
+    transition: background-color var(--transition-speed-fast) ease, width var(--transition-speed) ease;
     display: flex;
     flex-direction: column;
 }
@@ -78,7 +121,6 @@ body {
     color: var(--text-color-light);
 }
 
-/* sidebar links */
 .sidebar .nav-list {
     margin-top: 20px;
     flex-grow: 1;
@@ -100,8 +142,8 @@ body {
     transform: translateY(-50%);
     z-index: 3;
     background: var(--hover-light-bg);
-    color: var(--text-color-dark);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    color: var(--hover-dark-text);
+    box-shadow: 0 5px 10px var(--shadow-color);
     padding: 6px 12px;
     border-radius: 4px;
     font-size: 15px;
@@ -136,7 +178,7 @@ body {
 .sidebar li .logout-button:hover,
 .sidebar li .login-link:hover {
     background: var(--hover-light-bg);
-    color: var(--text-color-dark);
+    color: var(--hover-dark-text);
 }
 
 .sidebar li a i,
@@ -156,7 +198,6 @@ body {
     white-space: nowrap;
 }
 
-/* active link */
 .sidebar li.active a {
     background: var(--active-bg-color);
     color: var(--text-color-light);
@@ -167,16 +208,15 @@ body {
     color: var(--text-color-light);
 }
 
-/* profile */
 .sidebar .profile {
     width: 100%;
     margin-top: auto;
-    background: var(--secondary-color);
+    background: var(--profile-background);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    transition: all 0.5s ease;
+    transition: all var(--transition-speed) ease;
     border-radius: 6px;
 }
 
@@ -192,9 +232,6 @@ body {
     object-fit: cover;
     border-radius: 6px;
     margin-right: 10px;
-}
-
-.sidebar .profile .name_job {
 }
 
 .sidebar .profile .name,
@@ -222,7 +259,7 @@ body {
     line-height: 50px;
     font-size: 20px;
     border-radius: 12px;
-    transition: all 0.5s ease;
+    transition: all var(--transition-speed) ease;
     padding: 0;
     height: 50px;
     width: 50px;
@@ -231,11 +268,10 @@ body {
 .sidebar .profile .logout-button:hover,
 .sidebar .profile .login-link:hover {
     background: var(--hover-light-bg);
-    color: var(--text-color-dark);
+    color: var(--hover-dark-text);
 }
 
 
-/* main content */
 .home-section {
     position: relative;
     background: var(--accent-color);
@@ -243,7 +279,7 @@ body {
     top: 0;
     left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
-    transition: all 0.5s ease;
+    transition: all var(--transition-speed) ease;
     z-index: 2;
     padding: 20px;
 }
@@ -259,12 +295,12 @@ body {
 .main-content-area {
     color: var(--text-color-dark);
     padding: 30px;
-    background-color: #fff;
+    background-color: var(--card-bg-color);
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
 }
 
-/* text fields */
 .main-content-area input[type="text"],
 .main-content-area input[type="email"],
 .main-content-area input[type="password"],
@@ -272,18 +308,25 @@ body {
 .main-content-area input[type="tel"],
 .main-content-area input[type="url"],
 .main-content-area input[type="number"],
+.main-content-area select,
 .main-content-area textarea {
     box-sizing: border-box;
     width: 100%;
     padding: 0.75em 1em;
     margin-bottom: 1em;
-    background-color: var(--accent-color);
-    border: 1px solid #ccc;
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--input-border-color);
     border-radius: 4px;
     line-height: 1.4;
     color: var(--text-color-dark);
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
 }
+
+.main-content-area input[type="file"] {
+    margin-bottom: 1em;
+    color: var(--text-color-dark);
+}
+
 
 .main-content-area input[type="text"]:focus,
 .main-content-area input[type="email"]:focus,
@@ -292,13 +335,65 @@ body {
 .main-content-area input[type="tel"]:focus,
 .main-content-area input[type="url"]:focus,
 .main-content-area input[type="number"]:focus,
+.main-content-area select:focus,
 .main-content-area textarea:focus {
-    border-color: var(--primary-color);
+    border-color: var(--secondary-color);
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(14, 20, 27, 0.25);
+    box-shadow: 0 0 0 0.2rem var(--secondary-color);
 }
 
-/* table styling */
+body.dark-mode .main-content-area input:focus,
+body.dark-mode .main-content-area select:focus,
+body.dark-mode .main-content-area textarea:focus {
+    box-shadow: 0 0 0 0.2rem rgba(53, 121, 133, 0.5);
+}
+
+
+.messages li {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.messages li.success {
+    border-color: var(--success-border-color);
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
+}
+
+.messages li.error {
+    border-color: var(--error-border-color);
+    background-color: var(--error-bg-color);
+    color: var(--error-color);
+}
+
+button[type="submit"],
+input[type="submit"],
+.button {
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: center;
+    transition: all var(--transition-speed-fast) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+.button:hover {
+    background-color: var(--active-hover-bg-color);
+    color: var(--text-color-light);
+    transform: scale(1.02);
+}
+
 .main-content-area table {
     width: 100%;
     border-collapse: collapse;
@@ -307,22 +402,41 @@ body {
 
 .main-content-area th,
 .main-content-area td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--table-border-color);
     padding: 8px;
     text-align: left;
+    transition: border-color var(--transition-speed-fast) ease;
 }
 
 .main-content-area th {
-    background-color: #fff;
+    background-color: var(--table-header-bg);
     color: var(--text-color-dark);
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
 }
 
-/* form specific tables */
+.main-content-area td a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.main-content-area td a:hover {
+    text-decoration: underline;
+}
+
+
+#postbook-form table,
 #postbook-form th,
 #postbook-form td {
-    vertical-align: baseline;
-    padding: 0.5em 0.5em 0.5em 0;
     border: none;
+    background-color: transparent;
+    padding: 0.5em 0.5em 0.5em 0;
+    vertical-align: baseline;
+}
+
+#postbook-form th {
+    text-align: right;
+    padding-right: 1em;
+    width: 15%;
 }
 
 #postbook-form input[type="text"],
@@ -335,34 +449,48 @@ body {
 
 #postbook-form label.required::after {
     content: " * ";
-    color: #FF1053;
+    color: var(--error-color);
 }
 
-/* error styling */
-.main-content-area .errorList {
+.main-content-area .errorlist {
     list-style-type: none;
     padding: 0;
     margin: 0.25em 0 0.5em 0;
-}
-
-.main-content-area .errorList li {
-    color: #FF1053;
+    color: var(--error-color);
     font-size: 0.9em;
 }
 
 .main-content-area td.field-with-errors input,
 .main-content-area td.field-with-errors textarea,
 .main-content-area td.field-with-errors select {
-    border-color: #FF1053;
+    border-color: var(--error-color);
 }
 
 .main-content-area td.field-with-errors input:focus,
 .main-content-area td.field-with-errors textarea:focus,
 .main-content-area td.field-with-errors select:focus {
-    border-color: #FF1053;
+    border-color: var(--error-color);
     box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
 }
 
+body.dark-mode .main-content-area td.field-with-errors input:focus,
+body.dark-mode .main-content-area td.field-with-errors textarea:focus,
+body.dark-mode .main-content-area td.field-with-errors select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 138, 138, 0.35);
+}
+
+
 #searchForm input[type="text"] {
     margin: 1em 0 1em 0;
+}
+
+.back-link a {
+    display: inline-block;
+    margin-top: 1em;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+    height: auto;
 }
