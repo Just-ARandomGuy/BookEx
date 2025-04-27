@@ -1,60 +1,77 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect
 
-from .models import MainMenu
 from .forms import BookForm
 from .models import Book
 
 
 def index(request):
-    return render(request,
-                  'bookMng/index.html',
-                  {
-                      'item_list': MainMenu.objects.all()
-                  })
+    context = {
+        'active_nav_item': 'index'
+    }
+    return render(request, 'bookMng/index.html', context)
 
 
 def postbook(request):
     submitted = False
+
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to post books.')
+        login_url = reverse('login')
+        postbook_url = reverse('postbook')
+        return redirect(f'{login_url}?next={postbook_url}')
+
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            # form.save()
             book = form.save(commit=False)
             try:
                 book.username = request.user
             except Exception:
                 pass
             book.save()
-            return HttpResponseRedirect('/postbook?submitted=True')
+            messages.success(request, 'Book added successfully.')
+            return redirect('mybooks')
     else:
         form = BookForm()
-        if 'submitted' in request.GET:
-            submitted = True
-    return render(request,
-                  'bookMng/postbook.html',
-                  {
-                      'form': form,
-                      'item_list': MainMenu.objects.all(),
-                      'submitted': submitted
-                  })
+
+    context = {
+        'form': form,
+        'active_nav_item': 'postbook'
+    }
+    return render(request, 'bookMng/postbook.html', context)
 
 
 def displaybooks(request):
     books = Book.objects.all()
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/displaybooks.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books
-                  })
+
+    context = {
+        'books': books,
+        'active_nav_item': 'displaybooks'
+    }
+    return render(request, 'bookMng/displaybooks.html', context)
+
+
+def mybooks(request):
+    # technically not needed anymore since My Books is hidden unless user is logged in
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    books = Book.objects.filter(username=request.user)
+    submitted_flag = request.GET.get('submitted') == 'True'
+
+    context = {
+        'books': books,
+        'active_nav_item': 'mybooks',
+        'submitted': submitted_flag,
+    }
+    return render(request, 'bookMng/mybooks.html', context)
 
 
 def booksearch_ajax(request):
@@ -75,52 +92,54 @@ def booksearch_ajax(request):
             'id': book.id,
             'name': book.name,
             'price': book.price,
-            'username': book.username.username if book.username else ''
+            'username': book.username.username if book.username else '',
+            'picture_url': book.picture.url if book.picture else '',
         })
 
     return JsonResponse({'books': books_data})
 
 
 def book_detail(request, book_id):
-    book = Book.objects.get(id=book_id)
+    try:
+        book = Book.objects.get(id=book_id)
 
-    book.pic_path = book.picture.url[14:]
-    return render(request,
-                  'bookMng/book_detail.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'book': book
-                  })
+    except Book.DoesNotExist:
+        from django.http import Http404
+        raise Http404("Book does not exist")
+
+    origin = request.GET.get('from', 'displaybooks')
+    active_nav = 'mybooks' if origin == 'mybooks' else 'displaybooks'
+
+    context = {
+        'book': book,
+        'active_nav_item': active_nav,
+        'origin': origin,
+    }
+
+    return render(request, 'bookMng/book_detail.html', context)
 
 
 def book_delete(request, book_id):
-    book = Book.objects.get(id=book_id)
-    book.delete()
+    book = get_object_or_404(Book, id=book_id, username=request.user)
 
-    return render(request,
-                  'bookMng/book_delete.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                  })
+    if request.method == 'POST':
+        book_name = book.name
+        book.delete()
+        messages.success(request, f"Book '{book_name}' deleted successfully.")
+        return redirect('mybooks')
+    else:
+        book_name = book.name
+        book.delete()
+        messages.success(request, f"Book '{book_name}' deleted successfully.")
+        return redirect('mybooks')
 
 
 class Register(CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy('register-success')
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         form.save()
-        return HttpResponseRedirect(self.success_url)
-
-
-def mybooks(request):
-    books = Book.objects.filter(username=request.user)
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/mybooks.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books
-                  })
+        messages.success(self.request, 'Registration successful. Please log in.')
+        return super().form_valid(form)

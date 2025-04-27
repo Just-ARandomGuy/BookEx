@@ -1,72 +1,70 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>BookEx</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 	<link rel="stylesheet" href="{% static 'base.css' %}" type="text/css">
+	<title>{% block title %}BookEx{% endblock %}</title>
+
 </head>
 <body>
-<header>
-	<div class="nav-container">
-		<div class="logo">
-			<a href="/">
-				<h1>BookEx</h1>
-			</a>
-		</div>
-
-		<nav class="navbar">
-			<ul>
-				{% block navbar %}
-				{% endblock navbar %}
-			</ul>
-		</nav>
-
-		<div class="login">
-	        <span style="float: right;">
-	            {% if user.is_authenticated %}
-		            {{ user.username }}
-		            <form action="{% url 'logout' %}?next=/" method="post">
-	                   <button type="submit">Logout</button>
-	                   {% csrf_token %}
-	               </form>
-	            {% else %}
-		            <a href="{% url 'login' %}?next=/"><button>Login</button></a>
-	            {% endif %}
-	        </span>
-		</div>
+<div class="sidebar">
+	<div class="logo-details">
+		<a href="{% url 'index' %}" class="logo-link">
+			<i class="fas fa-cubes icon"></i>
+			<div class="logo_name">BookEx</div>
+		</a>
+		<i class="fas fa-adjust" id="theme-toggle"></i>
 	</div>
 
-	<div class="banner">
-		<img src="{% static 'bookshelf.png' %}" height="120"/>
-	</div>
-</header>
+	<ul class="nav-list">
+		{% for item in sidebar_items %}
+			<li class="{% if item.url_name == active_nav_item %}active{% endif %}">
+				<a href="{{ item.url }}">
+					<i class="{{ item.icon_class }}"></i>
+					<span class="links_name">{{ item.name }}</span>
+				</a>
+				<span class="tooltip">{{ item.tooltip }}</span>
+			</li>
+		{% endfor %}
 
-
-<main class="content">
-	{% block content %}
-		<h1>Main Content</h1>
-	{% endblock content %}
-</main>
-
-<footer>
-	<div class="footer-container">
-		<div class="footer-grid">
-			<div class="footer-col">
-				<h3>Contact</h3>
-				<ul class="footer-links">
-					<li> 123 Main Street, City</li>
-					<li>(123) 456-7890</li>
-					<li> info@bookex.com</li>
-				</ul>
+		<li class="profile">
+			<div class="profile-details">
+				<img src="{% static 'default_avatar.svg' %}" alt="profile image">
+				<div class="name_job">
+					<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
+					<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
+				</div>
 			</div>
-		</div>
-		<div class="footer-bottom">
-			<p>&copy; {% now "Y" %} BookEx. All rights reserved.</p>
-		</div>
+			{% if user.is_authenticated %}
+				<form action="{% url 'logout' %}?next=/" method="post" class="logout-form">
+					{% csrf_token %}
+					<button type="submit" id="log_out" class="logout-button">
+						<i class="fas fa-sign-out-alt"></i>
+					</button>
+					<span class="tooltip">Logout</span>
+				</form>
+			{% else %}
+				{% url 'login' as login_url %}
+				<a href="{{ login_url }}{% if request.path != login_url %}?next={{ request.path }}{% endif %}" id="log_in" class="login-link">
+					<i class="fas fa-sign-in-alt"></i>
+					<span class="tooltip">Login</span>
+				</a>
+			{% endif %}
+		</li>
+	</ul>
+</div>
+
+<section class="home-section">
+	<div class="text">{% block page_title %}Dashboard{% endblock %}</div>
+	<div class="main-content-area">
+		{% block content %}
+			<p>Welcome to the main content area.</p>
+		{% endblock content %}
 	</div>
-</footer>
+</section>
+<script src="{% static 'themeToggle.js' %}"></script>
 </body>
 </html>

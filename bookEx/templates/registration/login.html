@@ -1,28 +1,37 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block navbar %}
-<li>
-	<a href="/"> Home </a>
-</li>
-{% endblock navbar %}
+{% block title %}BookEx - Login{% endblock %}
+{% block page_title %}BookEx - Login{% endblock %}
 
 {% block content %}
-<h1>User Login</h1>
-<form action="{% url 'login' %}" method="post">
-	<table>
-		{{ form.as_table }}
-		<tr>
-			<td>
-				<input type="submit" value="login">
-			</td>
-		</tr>
-	</table>
-	<p>
-		To register
-	</p>
+	<h1>User Login</h1>
 
-	<input type="hidden" name="next" value="{{ next }}"/>
-	{% csrf_token %}
-</form>
+	{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+				<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} </li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<form action="{% url 'login' %}" method="post">
+		<table id="login-form">
+			{{ form.as_table }}
+			<tr>
+				<th></th>
+				<td style="padding-top: 1em">
+					<button type="submit" class="button">
+						<i class="fas fa-sign-in-alt"></i> Submit
+					</button>
+					<a href="{% url 'register' %}" class="button">
+						<i class="fas fa-user-plus"></i> Register
+					</a>
+				</td>
+			</tr>
+		</table>
+
+		<input type="hidden" name="next" value="{{ next }}"/>
+		{% csrf_token %}
+	</form>
 {% endblock content %}
