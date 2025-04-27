@@ -108,10 +108,15 @@ def book_detail(request, book_id):
         from django.http import Http404
         raise Http404("Book does not exist")
 
+    origin = request.GET.get('from', 'displaybooks')
+    active_nav = 'mybooks' if origin == 'mybooks' else 'displaybooks'
+
     context = {
         'book': book,
-        'active_nav_item': 'displaybooks'
+        'active_nav_item': active_nav,
+        'origin': origin,
     }
+
     return render(request, 'bookMng/book_detail.html', context)
 
 

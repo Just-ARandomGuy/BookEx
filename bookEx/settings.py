@@ -72,6 +72,8 @@ WSGI_APPLICATION = "bookEx.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+LOGIN_REDIRECT_URL = 'index'
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

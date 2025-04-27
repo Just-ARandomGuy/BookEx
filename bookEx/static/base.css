@@ -93,6 +93,14 @@ body {
     color: var(--text-color-light);
 }
 
+.sidebar .logo-details .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    gap: 5px;
+}
+
 .sidebar .logo-details .icon {
     opacity: 1;
     height: 50px;
@@ -392,6 +400,34 @@ input[type="submit"]:hover,
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+button > i,
+a.button > i {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.button-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--text-color-light);
+}
+
+.button-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    color: var(--text-color-light);
+}
+
+body.dark-mode .button-danger {
+    background-color: #a71d1d;
+    border-color: #a71d1d;
+}
+
+body.dark-mode .button-danger:hover {
+    background-color: #8b1818;
+    border-color: #7c1515;
+}
+
 /* table styling */
 .main-content-area table {
     width: 100%;
@@ -413,12 +449,12 @@ input[type="submit"]:hover,
     transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
 }
 
-.main-content-area td a {
+.main-content-area td a:not(.button) {
     color: var(--secondary-color);
     text-decoration: none;
 }
 
-.main-content-area td a:hover {
+.main-content-area td a:not(.button):hover {
     text-decoration: underline;
 }
 

@@ -20,8 +20,13 @@
 			<thead>
 			{{ form.as_table }}
 			<tr>
-				<td><input type="submit" value="Submit">
-					<a href="{% url 'register' %}" class="button">Register</a>
+				<td>
+					<button type="submit" class="button">
+						<i class="fas fa-sign-in-alt"></i> Submit
+					</button>
+					<a href="{% url 'register' %}" class="button">
+						<i class="fas fa-user-plus"></i> Register
+					</a>
 				</td>
 			</tr>
 			</thead>

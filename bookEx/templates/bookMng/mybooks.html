@@ -10,32 +10,53 @@
 	{% if messages %}
 		<ul class="messages">
 			{% for message in messages %}
-				<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} </li>
+				<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
 			{% endfor %}
 		</ul>
 	{% endif %}
 
-	<table class="mybooks-table">
-		<thead>
-		<tr>
-			<th>Book Cover</th>
-			<th>Book Name</th>
-			<th>Book Price</th>
-			<th></th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for book in books %}
+	{% if books %}
+		<table class="mybooks-table">
+			<thead>
 			<tr>
-				<td><img src="{{ book.picture.url }}" width="100" alt="Cover for {{ book.name }}"/></td>
-				<td><a href="book_detail/{{ book.id }}"> {{ book.name }} </a></td>
-				<td> {{ book.price }} </td>
-				<td><a href="book_delete/{{ book.id }}"> Delete </a></td>
+				<th>Book Cover</th>
+				<th>Book Name</th>
+				<th>Book Price</th>
+				<th>Action</th>
 			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+			{% for book in books %}
+				<tr>
+					<td><a href="{% url 'book_detail' book.id %}?from=mybooks"><img src="{{ book.picture.url }}" width="100"
+					                                                                alt="Cover for {{ book.name }}"/></a></td>
+					<td><a href="{% url 'book_detail' book.id %}?from=mybooks"> {{ book.name }} </a></td>
+					<td> {{ book.price }} </td>
+					<td>
+						<a href="{% url 'book_delete' book.id %}" class="button button-danger"
+						   onclick="return confirm('Are you sure you want to delete this book?');">
+							<i class="fas fa-trash-alt"></i> Delete
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="no-books-message" style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
+			<h2>You haven't posted any books yet!</h2>
+			<p>Get started by adding your first book to the exchange.</p>
+			<br>
+			<a href="{% url 'postbook' %}" class="button" style="font-size: 1.1em; padding: 10px 20px;">
+				<i class="fas fa-plus-square"></i> Post Your First Book
+			</a>
+		</div>
+	{% endif %}
 
-	<p class="back-link"><a href="{% url 'displaybooks' %}" class="button"> View All Books </a></p>
+	<p class="back-link">
+		<a href="{% url 'displaybooks' %}" class="button">
+			<i class="fas fa-book-open"></i> View All Books
+		</a>
+	</p>
 
 {% endblock content %}

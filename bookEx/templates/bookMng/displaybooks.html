@@ -29,8 +29,9 @@
 		<tbody id="bookTableBody">
 		{% for book in books %}
 			<tr>
-				<td><img src="{{ book.picture.url }}" width="100" alt="Cover for {{ book.name }}"/></td>
-				<td><a href="book_detail/{{ book.id }}"> {{ book.name }} </a></td>
+				<td><a href="book_detail/{{ book.id }}?from=displaybooks"><img src="{{ book.picture.url }}" width="100"
+				                                                               alt="Cover for {{ book.name }}"/></a></td>
+				<td><a href="book_detail/{{ book.id }}?from=displaybooks"> {{ book.name }} </a></td>
 				<td>{{ book.price }}</td>
 				<td>{{ book.username.username }}</td>
 			</tr>
@@ -38,7 +39,13 @@
 		</tbody>
 	</table>
 
-	<p class="back-link"><a href="{% url 'mybooks' %}" class="button"> View my Books </a></p>
+	{% if user.is_authenticated %}
+		<p class="back-link">
+			<a href="{% url 'mybooks' %}" class="button">
+				<i class="fas fa-address-book"></i> View My Books
+			</a>
+		</p>
+	{% endif %}
 
 	<script src="{% static 'bookSearch.js' %}"></script>
 
