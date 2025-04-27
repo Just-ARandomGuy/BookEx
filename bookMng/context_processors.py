@@ -34,7 +34,7 @@ def sidebar_menu(request):
         },
         {
             'name': 'Shopping Cart',
-            'url_name': 'shoppingcart',
+            'url_name': 'displayCart',
             'icon_class': 'fas fa-shopping-cart',
             'active_block': 'nav_shoppingcart_active',
             'tooltip': 'Shopping Cart',

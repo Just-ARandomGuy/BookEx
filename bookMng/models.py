@@ -2,17 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-# Create your models here.
-
-
-class MainMenu(models.Model):
-    item = models.CharField(max_length=300, unique=True)
-    link = models.CharField(max_length=300, unique=True)
-
-    def __str__(self):
-        return self.item
-
-
 class Book(models.Model):
     name = models.CharField(max_length=200)
     web = models.URLField(max_length=300)
@@ -20,3 +9,17 @@ class Book(models.Model):
     publishdate = models.DateField(auto_now_add=True)
     picture = models.FileField(upload_to='uploads')
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+
+# This is the model for the user shopping cart
+class ShoppingCart(models.Model):
+    username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
+    item = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def getPrice(self):
+        return self.item.price * self.quantity

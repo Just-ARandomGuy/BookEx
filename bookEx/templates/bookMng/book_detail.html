@@ -16,6 +16,7 @@
 			<th> User</th>
 			<th> Book Post Date</th>
 			<th> Book Website</th>
+			<th> Add to Cart</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -29,6 +30,11 @@
 		</tr>
 		</tbody>
 	</table>
+
+	<form method="post" action="{% url 'addtocart' book.id %}">
+		{% csrf_token %}
+		<button type="submit">Add to Cart</button>
+	</form>
 
 	{% if origin == 'mybooks' %}
 		<a href="{% url 'mybooks' %}" class="button"> <i class="fas fa-arrow-left"></i> Back to My Books </a>

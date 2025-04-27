@@ -107,3 +107,6 @@ Anaconda/Miniconda.
 
 After these steps, the development server should run (e.g., `http://127.0.0.1:8000/`). Access the site and log into `/admin/` using the superuser
 details from Step 4.
+
+testeracc200404@gmail.com
+bao123456789
