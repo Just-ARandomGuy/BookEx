@@ -116,6 +116,12 @@ body {
     white-space: nowrap;
 }
 
+.logo_name:hover {
+    color: var(--active-hover-bg-color);
+    transition: all var(--transition-speed) ease;
+    transform: scale(1.10);
+}
+
 .sidebar .logo-details #theme-toggle {
     position: absolute;
     top: 50%;
@@ -360,18 +366,38 @@ body.dark-mode .main-content-area textarea:focus {
     list-style-type: none;
     padding: 10px;
     margin: 20px 20px 20px 0;
-    border: 1px solid green;
-    background-color: #e6ffed;
-    color: #006400;
+    border: 1px solid var(--success-border-color);
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
 }
 
+/* Corrected selector for error messages to match your HTML */
 .messages li.error {
     list-style-type: none;
     padding: 10px;
     margin: 20px 20px 20px 0;
-    border: 1px solid red;
-    background-color: #ffe6e6;
-    color: #8b0000;
+    border: 1px solid var(--error-border-color);
+    background-color: var(--error-bg-color);
+    color: var(--error-color);
+}
+
+.main-content-area td.field-with-errors input,
+.main-content-area td.field-with-errors textarea,
+.main-content-area td.field-with-errors select {
+    border-color: var(--error-color);
+}
+
+.main-content-area td.field-with-errors input:focus,
+.main-content-area td.field-with-errors textarea:focus,
+.main-content-area td.field-with-errors select:focus {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
+}
+
+body.dark-mode .main-content-area td.field-with-errors input:focus,
+body.dark-mode .main-content-area td.field-with-errors textarea:focus,
+body.dark-mode .main-content-area td.field-with-errors select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 138, 138, 0.35);
 }
 
 /* button styling */
@@ -437,16 +463,36 @@ body.dark-mode .button-danger:hover {
 
 .main-content-area th,
 .main-content-area td {
-    border: 1px solid var(--table-border-color);
+    border: none; /* Default to no borders for TH/TD in main content */
     padding: 8px;
     text-align: left;
-    transition: border-color var(--transition-speed-fast) ease;
 }
 
-.main-content-area th {
-    background-color: var(--table-header-bg);
+/* Data table specific TD (e.g., book listings) */
+.main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) td {
+    border-bottom: 1px solid var(--table-border-color);
+    border-top: 1px solid var(--table-border-color);
+    padding: 12px 8px;
+    text-align: left;
+    transition: border-color var(--transition-speed-fast) ease;
+    vertical-align: middle;
+}
+
+/* Data table specific TH */
+.main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) th {
+    border-bottom: 2px solid var(--table-border-color);
+    background-color: transparent; /* Keep transparent for theme consistency */
     color: var(--text-color-dark);
+    text-align: left;
+    padding: 12px 8px;
     transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+body.dark-mode .main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) th {
+    color: var(--text-color-light);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
 }
 
 .main-content-area td a:not(.button) {
@@ -458,62 +504,123 @@ body.dark-mode .button-danger:hover {
     text-decoration: underline;
 }
 
-/* form specific table styling */
-#postbook-form table,
-#postbook-form th,
-#postbook-form td {
-    border: none;
-    background-color: transparent;
-    padding: 0.5em 0.5em 0.5em 0;
-    vertical-align: baseline;
+/* table form specific styling */
+#login-form th, #login-form td,
+#register-form th, #register-form td,
+#postbook-form th, #postbook-form td {
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0.5em 0;
+    vertical-align: top;
+    font-weight: normal !important;
+    text-align: left;
+    transition: none !important;
 }
 
+#login-form th,
+#register-form th,
 #postbook-form th {
-    text-align: right;
-    padding-right: 1em;
-    width: 15%;
+    text-align: left;
+    width: 150px;
+    padding: 0.8em 1em 0.5em 0;
 }
 
-#postbook-form input[type="text"],
-#postbook-form input[type="url"],
-#postbook-form input[type="number"],
-#postbook-form input[type="file"],
-#postbook-form textarea {
+#login-form td,
+#register-form td,
+#postbook-form td {
+    padding-bottom: 0.8em;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#login-form label.required::after,
+#register-form label.required::after,
+#postbook-form label.required::after {
+    content: " *";
+    color: var(--error-color);
+    padding-left: 2px;
+}
+
+#login-form input, #login-form select, #login-form textarea,
+#register-form input, #register-form select, #register-form textarea,
+#postbook-form input, #postbook-form select, #postbook-form textarea {
     margin-bottom: 0;
 }
 
-#postbook-form label.required::after {
-    content: " * ";
-    color: var(--error-color);
-}
-
-.main-content-area .errorlist {
+/* error styling: form tables */
+#login-form ul.errorlist,
+#register-form ul.errorlist,
+#postbook-form ul.errorlist {
     list-style-type: none;
     padding: 0;
-    margin: 0.25em 0 0.5em 0;
+    margin: 0.25em 0 0 0;
     color: var(--error-color);
     font-size: 0.9em;
 }
 
-.main-content-area td.field-with-errors input,
-.main-content-area td.field-with-errors textarea,
-.main-content-area td.field-with-errors select {
+#login-form ul.errorlist li,
+#register-form ul.errorlist li,
+#postbook-form ul.errorlist li {
+    margin: 0;
+    padding: 0;
+}
+
+#login-form td.field-with-errors,
+#register-form td.field-with-errors,
+#postbook-form td.field-with-errors {
+}
+
+#login-form td.field-with-errors input,
+#register-form td.field-with-errors input,
+#postbook-form td.field-with-errors input {
     border-color: var(--error-color);
 }
 
-.main-content-area td.field-with-errors input:focus,
-.main-content-area td.field-with-errors textarea:focus,
-.main-content-area td.field-with-errors select:focus {
+
+#login-form td.field-with-errors input:focus,
+#register-form td.field-with-errors input:focus,
+#postbook-form td.field-with-errors input:focus {
     border-color: var(--error-color);
     box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
 }
 
-body.dark-mode .main-content-area td.field-with-errors input:focus,
-body.dark-mode .main-content-area td.field-with-errors textarea:focus,
-body.dark-mode .main-content-area td.field-with-errors select:focus {
+/* error fields: dark mode */
+body.dark-mode #login-form td.field-with-errors input:focus,
+body.dark-mode #register-form td.field-with-errors input:focus,
+body.dark-mode #postbook-form td.field-with-errors input:focus {
     box-shadow: 0 0 0 0.2rem rgba(255, 138, 138, 0.35);
 }
 
+/* submit buttons */
+#login-form tr:last-child td,
+#register-form tr:last-child td,
+#postbook-form tr:last-child td {
+    padding-top: 0.5em;
+}
+
+
+#login-form th:empty + td,
+#register-form th:empty + td,
+#postbook-form th:empty + td {
+    padding-top: 0.5em;
+}
+
+/* submit buttons */
+#login-form button[type="submit"], #login-form input[type="submit"],
+#register-form button[type="submit"], #register-form input[type="submit"],
+#postbook-form button[type="submit"], #postbook-form input[type="submit"] {
+    margin-left: 0;
+}
+
+#login-form tr:last-child td button,
+#login-form tr:last-child td a.button {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+/* misc */
+body.dark-mode .main-content-area th {
+}
 
 #searchForm input[type="text"] {
     margin: 1em 0 1em 0;
@@ -528,4 +635,11 @@ img {
     border: none;
     max-width: 100%;
     height: auto;
+    vertical-align: middle;
+}
+
+ul.messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5em 0;
 }

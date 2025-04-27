@@ -16,11 +16,11 @@
 	{% endif %}
 
 	<form action="{% url 'login' %}" method="post">
-		<table>
-			<thead>
+		<table id="login-form">
 			{{ form.as_table }}
 			<tr>
-				<td>
+				<th></th>
+				<td style="padding-top: 1em">
 					<button type="submit" class="button">
 						<i class="fas fa-sign-in-alt"></i> Submit
 					</button>
@@ -29,7 +29,6 @@
 					</a>
 				</td>
 			</tr>
-			</thead>
 		</table>
 
 		<input type="hidden" name="next" value="{{ next }}"/>

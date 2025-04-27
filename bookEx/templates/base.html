@@ -47,7 +47,8 @@
 					<span class="tooltip">Logout</span>
 				</form>
 			{% else %}
-				<a href="{% url 'login' %}?next={{ request.path }}" id="log_in" class="login-link">
+				{% url 'login' as login_url %}
+				<a href="{{ login_url }}{% if request.path != login_url %}?next={{ request.path }}{% endif %}" id="log_in" class="login-link">
 					<i class="fas fa-sign-in-alt"></i>
 					<span class="tooltip">Login</span>
 				</a>
