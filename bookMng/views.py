@@ -2,6 +2,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render
+from flask import redirect
+from .models import MainMenu, ShoppingCart, CartItem
+
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
@@ -143,3 +147,34 @@ class Register(CreateView):
         form.save()
         messages.success(self.request, 'Registration successful. Please log in.')
         return super().form_valid(form)
+
+
+def displayCart(request):
+    cart1 = ShoppingCart.objects.get(username=request.user)
+    cart_items = CartItem.objects.filter(cart=cart1)
+    total = 0;
+    for cart_item in cart_items:
+        total += cart_item.getPrice();
+    return render(request,
+                  'bookMng/displayCart.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'cart_items': cart_items,
+                      'total': total
+                  })
+
+
+def addtocart(request, book_id):
+    if request.method == 'POST':
+        book = Book.objects.get(id=book_id)
+        cart, created = ShoppingCart.objects.get_or_create(username=request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+    return render(request,
+                  'bookMng/displaybooks.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'books': Book.objects.all()
+                  })

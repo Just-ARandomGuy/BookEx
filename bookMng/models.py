@@ -20,3 +20,20 @@ class Book(models.Model):
     publishdate = models.DateField(auto_now_add=True)
     picture = models.FileField(upload_to='uploads')
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+#This is the model for the user shopping cart
+class ShoppingCart(models.Model):
+    username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(ShoppingCart,  on_delete=models.CASCADE)
+    item = models.ForeignKey(Book,  on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def getPrice(self):
+        return self.item.price * self.quantity
+
+
+
+
+
