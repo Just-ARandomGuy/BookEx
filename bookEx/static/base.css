@@ -371,7 +371,6 @@ body.dark-mode .main-content-area textarea:focus {
     color: var(--success-color);
 }
 
-/* Corrected selector for error messages to match your HTML */
 .messages li.error {
     list-style-type: none;
     padding: 10px;
@@ -463,12 +462,11 @@ body.dark-mode .button-danger:hover {
 
 .main-content-area th,
 .main-content-area td {
-    border: none; /* Default to no borders for TH/TD in main content */
+    border: none;
     padding: 8px;
     text-align: left;
 }
 
-/* Data table specific TD (e.g., book listings) */
 .main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) td {
     border-bottom: 1px solid var(--table-border-color);
     border-top: 1px solid var(--table-border-color);
@@ -478,10 +476,9 @@ body.dark-mode .button-danger:hover {
     vertical-align: middle;
 }
 
-/* Data table specific TH */
 .main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) th {
     border-bottom: 2px solid var(--table-border-color);
-    background-color: transparent; /* Keep transparent for theme consistency */
+    background-color: transparent;
     color: var(--text-color-dark);
     text-align: left;
     padding: 12px 8px;
