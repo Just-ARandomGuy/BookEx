@@ -35,12 +35,13 @@
 					<tr>
 						<td>
 							{% if cart_item.item.picture %}
-								<img src="{{ cart_item.item.picture.url }}" alt="{{ cart_item.item.name }} Cover" style="width: 50px; height: auto;">
+								<a href="#" data-book-id="{{ cart_item.item.id }}"><img src="{{ cart_item.item.picture.url }}" alt="
+								{{ cart_item.item.name }} Cover" style="width: 50px; height: auto;"></a>
 							{% else %}
 								(No image)
 							{% endif %}
 						</td>
-						<td><a href="{% url 'book_detail' cart_item.item.id %}?from=displaycart">{{ cart_item.item.name }}</a></td>
+						<td><a href="#" data-book-id="{{ cart_item.item.id }}">{{ cart_item.item.name }}</a></td>
 						<td>${{ cart_item.item.price|floatformat:2 }}</td>
 						<td>{{ cart_item.item.username.username }}</td>
 						<td>

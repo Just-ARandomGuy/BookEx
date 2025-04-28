@@ -104,24 +104,50 @@ def booksearch_ajax(request):
     return JsonResponse({'books': books_data})
 
 
-def book_detail(request, book_id):
-    try:
-        book = Book.objects.get(id=book_id)
+# def book_detail(request, book_id):
+#     try:
+#         book = Book.objects.get(id=book_id)
+#
+#     except Book.DoesNotExist:
+#         from django.http import Http404
+#         raise Http404("Book does not exist")
+#
+#     origin = request.GET.get('from', 'displaybooks')
+#     active_nav = 'mybooks' if origin == 'mybooks' else 'displaybooks'
+#
+#     context = {
+#         'book': book,
+#         'active_nav_item': active_nav,
+#         'origin': origin,
+#     }
+#
+#     return render(request, 'bookMng/book_detail.html', context)
 
-    except Book.DoesNotExist:
-        from django.http import Http404
-        raise Http404("Book does not exist")
 
-    origin = request.GET.get('from', 'displaybooks')
-    active_nav = 'mybooks' if origin == 'mybooks' else 'displaybooks'
+def get_book_detail_json(request, book_id):
+    book = Book.objects.select_related('username').get(id=book_id)
+    is_owner = request.user.is_authenticated and book.username == request.user
 
-    context = {
-        'book': book,
-        'active_nav_item': active_nav,
-        'origin': origin,
+    data = {
+        'id': book.id,
+        'name': book.name,
+        'price': f"{book.price:.2f}",
+        'seller': book.username.username if book.username else 'N/A',
+        'publishdate': book.publishdate.strftime('%m-%d-%Y'),
+        'web': book.web,
+        'picture_url': book.picture.url if book.picture else None,
+        'is_authenticated': request.user.is_authenticated,
+        'is_owner': is_owner,
+        'add_to_cart_url': reverse('addtocart', args=[book.id]) if request.user.is_authenticated and not is_owner else None,
     }
 
-    return render(request, 'bookMng/book_detail.html', context)
+    if not data['is_authenticated']:
+        next_page_url = reverse('displaybooks')
+        data['login_url'] = f"{reverse('login')}?next={next_page_url}"
+
+    if is_owner:
+        data['delete_url'] = reverse('book_delete', args=[book.id])
+    return JsonResponse(data)
 
 
 def book_delete(request, book_id):
@@ -133,9 +159,7 @@ def book_delete(request, book_id):
         messages.success(request, f"Book '{book_name}' deleted successfully.")
         return redirect('mybooks')
     else:
-        book_name = book.name
-        book.delete()
-        messages.success(request, f"Book '{book_name}' deleted successfully.")
+        messages.warning(request, "Deletion must be done via POST and confirmed via modal")
         return redirect('mybooks')
 
 
@@ -167,19 +191,22 @@ def displayCart(request):
 
 def addtocart(request, book_id):
     if request.method != 'POST':
-        return redirect('book_detail', book_id=book_id)
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
     if not request.user.is_authenticated:
         messages.error(request, 'You must be logged in to add books to cart!')
         login_url = reverse('login')
-        book_detail_url = reverse('book_detail', args=[book_id])
-        return redirect(f'{login_url}?next={book_detail_url}')
+        next_url = request.META.get('HTTP_REFERER', reverse('displaybooks'))
+        return redirect(f'{login_url}?next={next_url}')
 
     book = get_object_or_404(Book, id=book_id)
 
     if book.username == request.user:
         messages.error(request, 'You cannot buy your own books!')
-        return redirect('book_detail', book_id=book_id)
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'You cannot buy your own books!'}, status=400)
+        return redirect(request.META.get('HTTP_REFERER', 'displaybooks'))
 
     cart, created = ShoppingCart.objects.get_or_create(username=request.user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
@@ -187,7 +214,9 @@ def addtocart(request, book_id):
         cart_item.quantity += 1
         cart_item.save()
 
-    messages.success(request, f"Added '{book.name}' to your cart.")
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'message': f"Added '{book.name}' to your cart."})
+
     return redirect('displayCart')
 
 

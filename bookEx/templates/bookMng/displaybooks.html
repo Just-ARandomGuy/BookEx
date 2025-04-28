@@ -29,9 +29,14 @@
 		<tbody id="bookTableBody">
 		{% for book in books %}
 			<tr>
-				<td><a href="book_detail/{{ book.id }}?from=displaybooks"><img src="{{ book.picture.url }}" width="100"
-				                                                               alt="Cover for {{ book.name }}"/></a></td>
-				<td><a href="book_detail/{{ book.id }}?from=displaybooks"> {{ book.name }} </a></td>
+				<td>
+					<a href="#" data-book-id="{{ book.id }}">
+						<img src="{{ book.picture.url }}" width="100" alt="Cover for {{ book.name }}"/>
+					</a>
+				</td>
+				<td>
+					<a href="#" data-book-id="{{ book.id }}"> {{ book.name }} </a>
+				</td>
 				<td>{{ book.price }}</td>
 				<td>{{ book.username.username }}</td>
 			</tr>
