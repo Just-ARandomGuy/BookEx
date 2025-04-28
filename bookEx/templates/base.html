@@ -11,50 +11,55 @@
 </head>
 <body>
 <div class="sidebar">
-	<div class="logo-details">
-		<a href="{% url 'index' %}" class="logo-link">
-			<i class="fas fa-cubes icon"></i>
-			<div class="logo_name">BookEx</div>
-		</a>
-		<i class="fas fa-adjust" id="theme-toggle"></i>
+	<div class="sidebar-top-content">
+		<div class="logo-details">
+			<a href="{% url 'index' %}" class="logo-link">
+				<i class="fas fa-cubes icon"></i>
+				<div class="logo_name">BookEx</div>
+			</a>
+			<i class="fas fa-adjust" id="theme-toggle"></i>
+		</div>
+
+		<ul class="nav-list">
+			{% for item in sidebar_items %}
+				<li class="{% if item.url_name == active_nav_item %}active{% endif %}">
+					<a href="{{ item.url }}">
+						<i class="{{ item.icon_class }}"></i>
+						<span class="links_name">{{ item.name }}</span>
+					</a>
+					<span class="tooltip">{{ item.tooltip }}</span>
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
 
-	<ul class="nav-list">
-		{% for item in sidebar_items %}
-			<li class="{% if item.url_name == active_nav_item %}active{% endif %}">
-				<a href="{{ item.url }}">
-					<i class="{{ item.icon_class }}"></i>
-					<span class="links_name">{{ item.name }}</span>
-				</a>
-				<span class="tooltip">{{ item.tooltip }}</span>
-			</li>
-		{% endfor %}
-
-		<li class="profile">
-			<div class="profile-details">
-				<img src="{% static 'default_avatar.svg' %}" alt="profile image">
-				<div class="name_job">
-					<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
-					<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
-				</div>
+	<div class="profile-container">
+		<div class="profile-details">
+			<img src="{% static 'default_avatar.svg' %}" alt="profile image">
+			<div class="name_job">
+				<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
+				<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
 			</div>
-			{% if user.is_authenticated %}
-				<form action="{% url 'logout' %}?next=/" method="post" class="logout-form">
-					{% csrf_token %}
-					<button type="submit" id="log_out" class="logout-button">
-						<i class="fas fa-sign-out-alt"></i>
-					</button>
-					<span class="tooltip">Logout</span>
-				</form>
-			{% else %}
-				{% url 'login' as login_url %}
+		</div>
+		{% if user.is_authenticated %}
+			<form action="{% url 'logout' %}?next=/" method="post" class="logout-form profile-action-item">
+				{% csrf_token %}
+				<button type="submit" id="log_out" class="logout-button">
+					<i class="fas fa-sign-out-alt"></i>
+				</button>
+				<span class="tooltip">Logout</span>
+			</form>
+		{% else %}
+			{% url 'login' as login_url %}
+			<div class="profile-action-item">
 				<a href="{{ login_url }}{% if request.path != login_url %}?next={{ request.path }}{% endif %}" id="log_in" class="login-link">
 					<i class="fas fa-sign-in-alt"></i>
-					<span class="tooltip">Login</span>
 				</a>
-			{% endif %}
-		</li>
-	</ul>
+				<span class="tooltip">Login</span>
+			</div>
+		{% endif %}
+	</div>
+
 </div>
 
 <section class="home-section">

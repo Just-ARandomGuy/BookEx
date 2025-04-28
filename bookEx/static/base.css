@@ -83,6 +83,13 @@ body {
     transition: background-color var(--transition-speed-fast) ease, width var(--transition-speed) ease;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-top-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .sidebar .logo-details {
@@ -135,13 +142,13 @@ body {
     color: var(--text-color-light);
 }
 
-/* sidebar links */
+/* sidebar links: top section (nav links) */
 .sidebar .nav-list {
     margin-top: 20px;
-    flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 5px;
+    flex-shrink: 1;
 }
 
 .sidebar li {
@@ -174,9 +181,7 @@ body {
     pointer-events: auto;
 }
 
-.sidebar li a,
-.sidebar li .logout-button,
-.sidebar li .login-link {
+.sidebar li a {
     display: flex;
     height: 100%;
     width: 100%;
@@ -189,9 +194,7 @@ body {
     padding: 10px 0;
 }
 
-.sidebar li a:hover,
-.sidebar li .logout-button:hover,
-.sidebar li .login-link:hover {
+.sidebar li a:hover {
     background: var(--hover-light-bg);
     color: var(--hover-dark-text);
 }
@@ -225,9 +228,9 @@ body {
 }
 
 /* profile */
-.sidebar .profile {
+
+.profile-container {
     width: 100%;
-    margin-top: auto;
     background: var(--profile-background);
     display: flex;
     align-items: center;
@@ -235,15 +238,17 @@ body {
     padding: 10px 14px;
     transition: all var(--transition-speed) ease;
     border-radius: 6px;
+    flex-shrink: 0;
 }
 
-.sidebar .profile .profile-details {
+.profile-container .profile-details {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
+    overflow: hidden;
 }
 
-.sidebar .profile img {
+.profile-container img {
     height: 45px;
     width: 45px;
     object-fit: cover;
@@ -251,20 +256,27 @@ body {
     margin-right: 10px;
 }
 
-.sidebar .profile .name,
-.sidebar .profile .job {
+.profile-container .name,
+.profile-container .job {
     font-size: 15px;
     font-weight: 400;
     color: var(--text-color-light);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.sidebar .profile .job {
+.profile-container .job {
     font-size: 12px;
 }
 
-.sidebar .profile .logout-button,
-.sidebar .profile .login-link {
+.profile-container .profile-action-item {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-container .logout-button,
+.profile-container .login-link {
     background: none;
     border: none;
     cursor: pointer;
@@ -280,12 +292,39 @@ body {
     padding: 0;
     height: 50px;
     width: 50px;
+    text-decoration: none;
 }
 
-.sidebar .profile .logout-button:hover,
-.sidebar .profile .login-link:hover {
+.profile-container .logout-button:hover,
+.profile-container .login-link:hover {
     background: var(--hover-light-bg);
     color: var(--hover-dark-text);
+}
+
+.profile-container .profile-action-item .tooltip {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: var(--hover-light-bg);
+    color: var(--hover-dark-text);
+    box-shadow: 0 5px 10px var(--shadow-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+
+    right: calc(0% - 75px);
+    left: auto;
+}
+
+.profile-container .profile-action-item:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* modal styling: book detail */
