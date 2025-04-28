@@ -37,7 +37,7 @@
 
 	<div class="profile-container">
 		<div class="profile-details">
-			<img src="{% static 'default_avatar.svg' %}" alt="profile image">
+			<img src="{% static 'svg/default_avatar.svg' %}" alt="profile image">
 			<div class="name_job">
 				<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
 				<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
@@ -96,7 +96,7 @@
 	</div>
 </div>
 
-<script src="{% static 'themeToggle.js' %}"></script>
-<script src="{% static 'modalHandler.js' %}"></script>
+<script src="{% static 'js/themeToggle.js' %}"></script>
+<script src="{% static 'js/modalHandler.js' %}"></script>
 </body>
 </html>
