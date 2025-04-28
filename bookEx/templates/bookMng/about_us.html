@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block sidenav %}
-   {% for item in item_list %}
-      <li>
-        <a href="{{ item.link }}">  {{ item.item }} </a>
-      </li>
-   {% endfor %}
-{% endblock sidenav %}
-
 {% block content %}
-   <h1>About Us</h1>
-   <p> We are a group of 6 Computer Science students studying at California State University Los Angeles,
-        working to bring you the best book management system that your eyes have ever seen.
-   </p>
+    <h1>About Us</h1>
+        <p>Welcome to Book Management System, your trusted platform for buying, selling, and managing books online.
+        Built with care by a passionate team of developers from California State University, Los Angeles,
+        we are dedicated to creating an easy, reliable, and enjoyable experience for every reader and seller.</p>
+
+        <p>Our mission is to make book trading simple, accessible, and secure.
+        Whether you're looking to declutter your shelf, find your next favorite read, or connect with fellow book lovers,
+        we're here to help. Thank you for choosing us!</p>
 {% endblock content %}

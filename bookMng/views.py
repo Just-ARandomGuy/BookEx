@@ -230,6 +230,12 @@ def remove_from_cart(request, book_id):
     return redirect('displayCart')
 
 
+def aboutUs(request):
+    context = {
+        'active_nav_item': 'aboutUs'
+    }
+    return render(request, 'bookMng/about_us.html', context)
+
 def update_cart(request):
     if request.method == 'POST':
         cart = get_object_or_404(ShoppingCart, username=request.user)
