@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         const bookPicture = bookPictureUrl ? `<img src="${bookPictureUrl}" width="100" alt="Cover for ${bookName}"/>` : '';
                         const row = `
                         <tr>
-                             <td><a href="book_detail/${bookId}?from=displaybooks">${bookPicture}</a></td>
-                             <td><a href="book_detail/${bookId}?from=displaybooks">${bookName}</a></td>
+                             <td><a href="#" data-book-id="${bookId}">${bookPicture}</a></td>
+                             <td><a href="#" data-book-id="${bookId}">${bookName}</a></td>
                              <td>${bookPrice}</td>
                              <td>${bookUserName}</td>
                         </tr>

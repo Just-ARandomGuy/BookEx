@@ -361,19 +361,14 @@ body {
 }
 
 .modal-content a {
-    color: var(--text-color-light);
+    color: var(--text-color-dark);
     text-decoration: none;
-}
-
-.modal-content a:hover {
-    background-color: var(--active-hover-bg-color);
-    text-decoration: underline;
 }
 
 body.dark-mode .modal {
     background-color: rgba(0, 0, 0, 0.7);
+    text-decoration: none;
 }
-
 
 body.dark-mode .close-button:hover,
 body.dark-mode .close-button:focus {
@@ -566,7 +561,12 @@ a.button > i {
     color: var(--text-color-light);
 }
 
-.button-danger:hover {
+body.dark-mode .button:hover {
+    background-color: var(--active-hover-bg-color);
+    color: var(--text-color-light);
+}
+
+.button.button-danger:hover {
     background-color: #c82333;
     border-color: #bd2130;
     color: var(--text-color-light);
