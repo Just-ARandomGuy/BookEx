@@ -288,6 +288,120 @@ body {
     color: var(--hover-dark-text);
 }
 
+/* modal styling: book detail */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: var(--card-bg-color);
+    color: var(--text-color-dark);
+    margin: 10% auto;
+    padding: 25px;
+    border: 1px solid var(--input-border-color);
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--text-color-dark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.modal-image {
+    flex-shrink: 0;
+}
+
+.modal-details {
+    flex-grow: 1;
+}
+
+.modal-details p {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.modal-details strong {
+    color: var(--text-color-dark);
+    min-width: 80px;
+    display: inline-block;
+}
+
+.modal-content a {
+    color: var(--text-color-light);
+    text-decoration: none;
+}
+
+.modal-content a:hover {
+    background-color: var(--active-hover-bg-color);
+    text-decoration: underline;
+}
+
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+body.dark-mode .close-button:hover,
+body.dark-mode .close-button:focus {
+    color: var(--text-color-light);
+}
+
+body.dark-mode .modal-details strong {
+    color: var(--text-color-light);
+}
+
+#modalMessages .message {
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+#modalMessages .message.success {
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
+    border: 1px solid var(--success-border-color);
+}
+
+#modalMessages .message.error {
+    background-color: var(--error-bg-color);
+    color: var(--error-color);
+    border: 1px solid var(--error-border-color);
+}
 
 /* main content */
 .home-section {

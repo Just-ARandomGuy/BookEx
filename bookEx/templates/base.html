@@ -65,6 +65,31 @@
 		{% endblock content %}
 	</div>
 </section>
+
+
+<div id="bookDetailModal" class="modal" style="display: none;">
+	<div class="modal-content">
+		<span class="close-button" onclick="closeModal()">×</span>
+		<h2 id="modalBookTitle">Book Title</h2>
+		<div class="modal-body">
+			<div class="modal-image">
+				<img id="modalBookImage" src="" alt="Book Cover" style="max-width: 150px; height: auto;">
+			</div>
+			<div class="modal-details">
+				<p><strong>Price:</strong> $<span id="modalBookPrice">0.00</span></p>
+				<p><strong>Seller:</strong> <span id="modalBookSeller">Seller Name</span></p>
+				<p><strong>Posted:</strong> <span id="modalBookDate">Date</span></p>
+				<p><strong>Website:</strong> <a id="modalBookWeb" href="#" target="_blank" rel="noopener noreferrer">Link</a></p>
+				<div id="modalActionArea" style="margin-top: 15px;">
+				</div>
+				<div id="modalMessages" style="margin-top: 10px;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script src="{% static 'themeToggle.js' %}"></script>
+
 </body>
 </html>
