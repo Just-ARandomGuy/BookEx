@@ -1,56 +1,100 @@
 {% load static %}
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Layout with Banner, Menu, and Content</title>
-    <link rel="stylesheet" href="{% static 'base.css' %}" type="text/css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<link rel="stylesheet" href="{% static 'base.css' %}" type="text/css">
+	<title>{% block title %}BookEx{% endblock %}</title>
+
 </head>
 <body>
-    <header>
+<div class="sidebar">
+	<div class="sidebar-top-content">
+		<div class="logo-details">
+			<a href="{% url 'index' %}" class="logo-link">
+				<i class="fas fa-cubes icon"></i>
+				<div class="logo_name">BookEx</div>
+			</a>
+			<i class="fas fa-adjust" id="theme-toggle"></i>
+		</div>
 
-        <span style="float: right;">
-            {% if user.is_authenticated %}
-               {{ user.username}}
-               <form action="{% url 'logout' %}?next=/" method="post">
-                   <button type="submit">logout</button>
-                   {% csrf_token %}
-               </form>
-            {% else %}
-               Not Logged in
-               <a href="{% url 'login' %}?next=/">login</a>
-            {% endif %}
-        </span>
+		<ul class="nav-list">
+			{% for item in sidebar_items %}
+				<li class="{% if item.url_name == active_nav_item %}active{% endif %}">
+					<a href="{{ item.url }}">
+						<i class="{{ item.icon_class }}"></i>
+						<span class="links_name">{{ item.name }}</span>
+					</a>
+					<span class="tooltip">{{ item.tooltip }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 
-        <div class="banner">
-            <img src="{% static 'banner.jpg' %}" height="120"/>
-        </div>
-    </header>
+	<div class="profile-container">
+		<div class="profile-details">
+			<img src="{% static 'default_avatar.svg' %}" alt="profile image">
+			<div class="name_job">
+				<div class="name">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Guest{% endif %}</div>
+				<div class="job">{% if user.is_authenticated %}User{% else %}Not Logged In{% endif %}</div>
+			</div>
+		</div>
+		{% if user.is_authenticated %}
+			<form action="{% url 'logout' %}?next=/" method="post" class="logout-form profile-action-item">
+				{% csrf_token %}
+				<button type="submit" id="log_out" class="logout-button">
+					<i class="fas fa-sign-out-alt"></i>
+				</button>
+				<span class="tooltip">Logout</span>
+			</form>
+		{% else %}
+			{% url 'login' as login_url %}
+			<div class="profile-action-item">
+				<a href="{{ login_url }}{% if request.path != login_url %}?next={{ request.path }}{% endif %}" id="log_in" class="login-link">
+					<i class="fas fa-sign-in-alt"></i>
+				</a>
+				<span class="tooltip">Login</span>
+			</div>
+		{% endif %}
+	</div>
 
-    <div class="container">
-        <nav class="sidebar">
-            <ul>
-                {% block sidenav %}
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                {% endblock sidenav %}
-            </ul>
-        </nav>
+</div>
 
-        <main class="content">
-            {% block content %}
-               <h1>Main Content</h1>
-            {% endblock content %}
-        </main>
-    </div>
+<section class="home-section">
+	<div class="text">{% block page_title %}Dashboard{% endblock %}</div>
+	<div class="main-content-area">
+		{% block content %}
+			<p>Welcome to the main content area.</p>
+		{% endblock content %}
+	</div>
+</section>
 
-    <footer>
-        <p>&copy; 2025 My Web Layout</p>
-    </footer>
+
+<div id="bookDetailModal" class="modal" style="display: none;">
+	<div class="modal-content">
+		<span class="close-button" onclick="closeModal()">×</span>
+		<h2 id="modalBookTitle">Book Title</h2>
+		<div class="modal-body">
+			<div class="modal-image">
+				<img id="modalBookImage" src="" alt="Book Cover" style="max-width: 150px; height: auto;">
+			</div>
+			<div class="modal-details">
+				<p><strong>Price:</strong> $<span id="modalBookPrice">0.00</span></p>
+				<p><strong>Seller:</strong> <span id="modalBookSeller">Seller Name</span></p>
+				<p><strong>Posted:</strong> <span id="modalBookDate">Date</span></p>
+				<p><strong>Website:</strong> <a id="modalBookWeb" href="#" target="_blank" rel="noopener noreferrer">Link</a></p>
+				<div id="modalActionArea" style="margin-top: 15px;">
+				</div>
+				<div id="modalMessages" style="margin-top: 10px;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'themeToggle.js' %}"></script>
+<script src="{% static 'modalHandler.js' %}"></script>
 </body>
 </html>

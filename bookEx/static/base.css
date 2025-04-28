@@ -1,93 +1,870 @@
-/* General Reset */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
 }
 
-/* Body and Layout */
+:root {
+    --primary-color: #0e141b; /* sidebar background */
+    --secondary-color: #1d232c; /* buttons */
+    --profile-background: #1d232c; /* profile background color */
+    --accent-color: #e4e9f7; /* main content background */
+    --text-color-light: #e4e9f7; /* text on dark background */
+    --text-color-dark: #0e141b; /* text on light background */
+    --hover-light-bg: #fff; /* background color for hover items (light) */
+    --hover-dark-text: #0e141b; /* text color on hover (light) */
+    --active-bg-color: #357985; /* active sidebar item background */
+    --active-hover-bg-color: #5AAEBD; /* active sidebar item hover background */
+    --input-bg-color: #fff; /* input field background */
+    --input-border-color: #ccc; /* input field border */
+    --table-border-color: #ddd; /* table border color */
+    --table-header-bg: #f9f9f9; /* table header background */
+    --card-bg-color: #fff; /* content area card background */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* box shadow color */
+    --error-color: #ff1053; /* error text color */
+    --error-bg-color: #ffe6e6; /* error message background */
+    --error-border-color: red; /* error message border */
+    --success-color: #006400; /* success text color */
+    --success-bg-color: #e6ffed; /* success message background */
+    --success-border-color: green; /* success message border */
+
+    --sidebar-width: 260px;
+    --transition-speed: 0.5s;
+    --transition-speed-fast: 0.3s;
+}
+
+/* dark theme variables */
+body.dark-mode {
+    --primary-color: #1d232c; /* lighter dark */
+    --secondary-color: #357985; /* accent from light as secondary */
+    --profile-background: #151a20; /* profile background color */
+    --accent-color: #121212; /* dark grey for main background */
+    --text-color-light: #e4e9f7; /* stays light */
+    --text-color-dark: #e0e0e0; /* light grey for text on dark */
+    --hover-light-bg: #333; /* darker hover background */
+    --hover-dark-text: #e4e9f7; /* light text on hover */
+    --active-bg-color: #357985; /* darker active background */
+    --active-hover-bg-color: #5AAEBD; /* lighter active hover */
+    --input-bg-color: #2a2a2a; /* dark input background */
+    --input-border-color: #444; /* darker border */
+    --table-border-color: #444; /* darker table border */
+    --table-header-bg: #252525; /* dark table header */
+    --card-bg-color: #1e1e1e; /* dark card background */
+    --shadow-color: rgba(255, 255, 255, 0.05); /* lighter shadow for dark */
+    --error-color: #ff8a8a; /* lighter error red */
+    --error-bg-color: #4d1f1f; /* dark error background */
+    --error-border-color: #a71d1d; /* dark error border */
+    --success-color: #90ee90; /* lighter green */
+    --success-bg-color: #1e4d2e; /* dark success background */
+    --success-border-color: #2f844b; /* dark success border */
+}
+
+
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
-    color: #333;
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--accent-color);
+    transition: background-color var(--transition-speed-fast) ease;
 }
 
-/* Header (Banner) */
-header {
-    background: #333;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.banner h1 {
-    margin: 0;
-}
-
-/* Container for Sidebar and Content */
-.container {
-    display: flex;
-    min-height: 80vh;
-    padding: 20px;
-}
-
-/* Sidebar (Main Menu) */
 .sidebar {
-    width: 200px;
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--sidebar-width);
+    background: var(--primary-color);
+    padding: 6px 14px 20px;
+    z-index: 99;
+    transition: background-color var(--transition-speed-fast) ease, width var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
+.sidebar-top-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.sidebar ul li {
-    margin: 10px 0;
+.sidebar .logo-details {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: var(--text-color-light);
 }
 
-.sidebar ul li a {
-    color: white;
+.sidebar .logo-details .logo-link {
+    display: flex;
+    align-items: center;
     text-decoration: none;
+    color: inherit;
+    gap: 5px;
+}
+
+.sidebar .logo-details .icon {
+    opacity: 1;
+    height: 50px;
+    min-width: 50px;
+    font-size: 28px;
+    text-align: center;
+    line-height: 50px;
+}
+
+.sidebar .logo-details .logo_name {
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.logo_name:hover {
+    color: var(--active-hover-bg-color);
+    transition: all var(--transition-speed) ease;
+    transform: scale(1.10);
+}
+
+.sidebar .logo-details #theme-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 22px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 50px;
+    width: 50px;
+    color: var(--text-color-light);
+}
+
+/* sidebar links: top section (nav links) */
+.sidebar .nav-list {
+    margin-top: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+    flex-shrink: 1;
+}
+
+.sidebar li {
+    position: relative;
+    margin: 8px 0;
+    list-style: none;
+}
+
+.sidebar li .tooltip {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 15px);
+    transform: translateY(-50%);
+    z-index: 3;
+    background: var(--hover-light-bg);
+    color: var(--hover-dark-text);
+    box-shadow: 0 5px 10px var(--shadow-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.sidebar li:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar li a {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 12px;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    background: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 10px 0;
+}
+
+.sidebar li a:hover {
+    background: var(--hover-light-bg);
+    color: var(--hover-dark-text);
+}
+
+.sidebar li a i,
+.sidebar li .logout-button i,
+.sidebar li .login-link i {
+    height: 50px;
+    min-width: 50px;
+    border-radius: 12px;
+    line-height: 50px;
+    text-align: center;
     font-size: 18px;
 }
 
-.sidebar ul li a:hover {
+.sidebar li a .links_name {
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+/* active link */
+.sidebar li.active a {
+    background: var(--active-bg-color);
+    color: var(--text-color-light);
+}
+
+.sidebar li.active a:hover {
+    background: var(--active-hover-bg-color);
+    color: var(--text-color-light);
+}
+
+/* profile */
+
+.profile-container {
+    width: 100%;
+    background: var(--profile-background);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    transition: all var(--transition-speed) ease;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.profile-container .profile-details {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.profile-container img {
+    height: 45px;
+    width: 45px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+.profile-container .name,
+.profile-container .job {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-color-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-container .job {
+    font-size: 12px;
+}
+
+.profile-container .profile-action-item {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-container .logout-button,
+.profile-container .login-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-light);
+    min-width: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    border-radius: 12px;
+    transition: all var(--transition-speed) ease;
+    padding: 0;
+    height: 50px;
+    width: 50px;
+    text-decoration: none;
+}
+
+.profile-container .logout-button:hover,
+.profile-container .login-link:hover {
+    background: var(--hover-light-bg);
+    color: var(--hover-dark-text);
+}
+
+.profile-container .profile-action-item .tooltip {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: var(--hover-light-bg);
+    color: var(--hover-dark-text);
+    box-shadow: 0 5px 10px var(--shadow-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+
+    right: calc(0% - 75px);
+    left: auto;
+}
+
+.profile-container .profile-action-item:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* modal styling: book detail */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: var(--card-bg-color);
+    color: var(--text-color-dark);
+    margin: 10% auto;
+    padding: 25px;
+    border: 1px solid var(--input-border-color);
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--text-color-dark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.modal-image {
+    flex-shrink: 0;
+}
+
+.modal-details {
+    flex-grow: 1;
+}
+
+.modal-details p {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.modal-details strong {
+    color: var(--text-color-dark);
+    min-width: 80px;
+    display: inline-block;
+}
+
+.modal-content a {
+    color: var(--text-color-dark);
+    text-decoration: none;
+}
+
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.7);
+    text-decoration: none;
+}
+
+body.dark-mode .close-button:hover,
+body.dark-mode .close-button:focus {
+    color: var(--text-color-light);
+}
+
+body.dark-mode .modal-details strong {
+    color: var(--text-color-light);
+}
+
+#modalMessages .message {
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+#modalMessages .message.success {
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
+    border: 1px solid var(--success-border-color);
+}
+
+#modalMessages .message.error {
+    background-color: var(--error-bg-color);
+    color: var(--error-color);
+    border: 1px solid var(--error-border-color);
+}
+
+/* main content */
+.home-section {
+    position: relative;
+    background: var(--accent-color);
+    min-height: 100vh;
+    top: 0;
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    transition: all var(--transition-speed) ease;
+    z-index: 2;
+    padding: 20px;
+}
+
+.home-section .text {
+    display: inline-block;
+    color: var(--text-color-dark);
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 18px;
+}
+
+.main-content-area {
+    color: var(--text-color-dark);
+    padding: 30px;
+    background-color: var(--card-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
+}
+
+/* text fields */
+.main-content-area input[type="text"],
+.main-content-area input[type="email"],
+.main-content-area input[type="password"],
+.main-content-area input[type="search"],
+.main-content-area input[type="tel"],
+.main-content-area input[type="url"],
+.main-content-area input[type="number"],
+.main-content-area select,
+.main-content-area textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.75em 1em;
+    margin-bottom: 1em;
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    line-height: 1.4;
+    color: var(--text-color-dark);
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
+}
+
+.main-content-area input[type="text"]:focus,
+.main-content-area input[type="email"]:focus,
+.main-content-area input[type="password"]:focus,
+.main-content-area input[type="search"]:focus,
+.main-content-area input[type="tel"]:focus,
+.main-content-area input[type="url"]:focus,
+.main-content-area input[type="number"]:focus,
+.main-content-area select:focus,
+.main-content-area textarea:focus {
+    border-color: var(--secondary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--secondary-color);
+}
+
+body.dark-mode .main-content-area input:focus,
+body.dark-mode .main-content-area select:focus,
+body.dark-mode .main-content-area textarea:focus {
+    box-shadow: 0 0 0 0.2rem rgba(53, 121, 133, 0.5);
+}
+
+/* success and errors */
+.messages li.success {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid var(--success-border-color);
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
+}
+
+.messages li.error {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid var(--error-border-color);
+    background-color: var(--error-bg-color);
+    color: var(--error-color);
+}
+
+.messages li.info {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid #31708f;
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+body.dark-mode .messages li.info {
+    border-color: #4a9bc1;
+    background-color: #2c3e50;
+    color: #a6d8f0;
+}
+
+.main-content-area td.field-with-errors input,
+.main-content-area td.field-with-errors textarea,
+.main-content-area td.field-with-errors select {
+    border-color: var(--error-color);
+}
+
+.main-content-area td.field-with-errors input:focus,
+.main-content-area td.field-with-errors textarea:focus,
+.main-content-area td.field-with-errors select:focus {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
+}
+
+body.dark-mode .main-content-area td.field-with-errors input:focus,
+body.dark-mode .main-content-area td.field-with-errors textarea:focus,
+body.dark-mode .main-content-area td.field-with-errors select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 138, 138, 0.35);
+}
+
+/* button styling */
+button[type="submit"],
+input[type="submit"],
+.button {
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+.button:hover {
+    background-color: var(--active-bg-color);
+    transform: scale(1.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button > i,
+a.button > i {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.button-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--text-color-light);
+}
+
+body.dark-mode .button:hover {
+    background-color: var(--active-hover-bg-color);
+    color: var(--text-color-light);
+}
+
+.button.button-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    color: var(--text-color-light);
+}
+
+body.dark-mode .button-danger {
+    background-color: #a71d1d;
+    border-color: #a71d1d;
+}
+
+body.dark-mode .button-danger:hover {
+    background-color: #8b1818;
+    border-color: #7c1515;
+}
+
+/* table styling */
+.main-content-area table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.main-content-area th,
+.main-content-area td {
+    border: none;
+    padding: 8px;
+    text-align: left;
+}
+
+.main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) td {
+    border-bottom: 1px solid var(--table-border-color);
+    border-top: 1px solid var(--table-border-color);
+    padding: 12px 8px;
+    text-align: left;
+    transition: border-color var(--transition-speed-fast) ease;
+    vertical-align: middle;
+}
+
+.main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) th {
+    border-bottom: 2px solid var(--table-border-color);
+    background-color: transparent;
+    color: var(--text-color-dark);
+    text-align: left;
+    padding: 12px 8px;
+    transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+body.dark-mode .main-content-area table:not(#login-form):not(#register-form):not(#postbook-form) th {
+    color: var(--text-color-light);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.main-content-area td a:not(.button) {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.main-content-area td a:not(.button):hover {
     text-decoration: underline;
 }
 
-/* Main Content */
-.content {
-    flex-grow: 1;
-    margin-left: 20px;
+/* table form specific styling */
+#login-form th, #login-form td,
+#register-form th, #register-form td,
+#postbook-form th, #postbook-form td {
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0.5em 0;
+    vertical-align: top;
+    font-weight: normal !important;
+    text-align: left;
+    transition: none !important;
 }
 
-.content section {
-    margin-bottom: 20px;
+#login-form th,
+#register-form th,
+#postbook-form th {
+    text-align: left;
+    width: 150px;
+    padding: 0.8em 1em 0.5em 0;
 }
 
-.content h2 {
-    color: #333;
+#login-form td,
+#register-form td,
+#postbook-form td {
+    padding-bottom: 0.8em;
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.content p {
-    font-size: 1.1em;
-    line-height: 1.6;
+#login-form label.required::after,
+#register-form label.required::after,
+#postbook-form label.required::after {
+    content: " *";
+    color: var(--error-color);
+    padding-left: 2px;
 }
 
-/* Footer */
-footer {
-    background: #333;
-    color: white;
+#login-form input, #login-form select, #login-form textarea,
+#register-form input, #register-form select, #register-form textarea,
+#postbook-form input, #postbook-form select, #postbook-form textarea {
+    margin-bottom: 0;
+}
+
+/* error styling: form tables */
+#login-form ul.errorlist,
+#register-form ul.errorlist,
+#postbook-form ul.errorlist {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.25em 0 0 0;
+    color: var(--error-color);
+    font-size: 0.9em;
+}
+
+#login-form ul.errorlist li,
+#register-form ul.errorlist li,
+#postbook-form ul.errorlist li {
+    margin: 0;
+    padding: 0;
+}
+
+#login-form td.field-with-errors,
+#register-form td.field-with-errors,
+#postbook-form td.field-with-errors {
+}
+
+#login-form td.field-with-errors input,
+#register-form td.field-with-errors input,
+#postbook-form td.field-with-errors input {
+    border-color: var(--error-color);
+}
+
+
+#login-form td.field-with-errors input:focus,
+#register-form td.field-with-errors input:focus,
+#postbook-form td.field-with-errors input:focus {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 16, 83, 0.25);
+}
+
+/* error fields: dark mode */
+body.dark-mode #login-form td.field-with-errors input:focus,
+body.dark-mode #register-form td.field-with-errors input:focus,
+body.dark-mode #postbook-form td.field-with-errors input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 138, 138, 0.35);
+}
+
+/* submit buttons */
+#login-form tr:last-child td,
+#register-form tr:last-child td,
+#postbook-form tr:last-child td {
+    padding-top: 0.5em;
+}
+
+
+#login-form th:empty + td,
+#register-form th:empty + td,
+#postbook-form th:empty + td {
+    padding-top: 0.5em;
+}
+
+/* submit buttons */
+#login-form button[type="submit"], #login-form input[type="submit"],
+#register-form button[type="submit"], #register-form input[type="submit"],
+#postbook-form button[type="submit"], #postbook-form input[type="submit"] {
+    margin-left: 0;
+}
+
+#login-form tr:last-child td button,
+#login-form tr:last-child td a.button {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+/* shopping cart */
+.empty-cart-container {
     text-align: center;
-    padding: 10px 0;
-    margin-top: 20px;
+    padding: 50px 20px;
+    margin-top: 30px;
+    background-color: var(--card-bg-color);
+    border: 1px dashed var(--input-border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
 }
 
-footer p {
-    font-size: 14px;
+.empty-cart-icon {
+    font-size: 5em;
+    color: var(--input-border-color);
+    margin-bottom: 25px;
+    display: block;
+    transition: color var(--transition-speed-fast) ease;
+}
+
+.empty-cart-text {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+    transition: color var(--transition-speed-fast) ease;
+}
+
+.empty-cart-subtext {
+    font-size: 1em;
+    color: var(--text-color-dark);
+    opacity: 0.7;
+    margin-bottom: 30px;
+    transition: color var(--transition-speed-fast) ease, opacity var(--transition-speed-fast) ease;
+}
+
+.empty-cart-button {
+    padding: 12px 25px;
+    font-size: 1.1em;
+}
+
+
+body.dark-mode .empty-cart-container {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: var(--input-border-color);
+}
+
+body.dark-mode .empty-cart-icon {
+    color: var(--input-border-color);
+}
+
+body.dark-mode .empty-cart-text {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .empty-cart-subtext {
+    color: var(--text-color-dark);
+    opacity: 0.6;
+}
+
+/* misc */
+body.dark-mode .main-content-area th {
+}
+
+#searchForm input[type="text"] {
+    margin: 1em 0 1em 0;
+}
+
+.back-link a {
+    display: inline-block;
+    margin-top: 1em;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+ul.messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5em 0;
 }
