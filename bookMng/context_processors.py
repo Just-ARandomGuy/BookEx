@@ -48,6 +48,13 @@ def sidebar_menu(request):
             'tooltip': 'Favorites',
             'login_required': True
         },
+        {
+            'name': 'About Us',
+            'url_name': 'about',  # make sure your urls.py has a name='about'
+            'icon_class': 'fas fa-info-circle',
+            'active_block': 'nav_about_active',
+            'tooltip': 'About Us'
+        },
     ]
 
     processed_menu_items = []

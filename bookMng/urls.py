@@ -13,5 +13,6 @@ urlpatterns = [
     path('addtocart/<int:book_id>', views.addtocart, name='addtocart'),
     path('removefromcart/<int:book_id>', views.remove_from_cart, name='removefromcart'),
     path('updatecart', views.update_cart, name='updatecart'),
+    path('aboutus', views.aboutUs, name='about'),
     path('api/book_detail/<int:book_id>/', views.get_book_detail_json, name='get_book_detail_json'),
 ]
