@@ -50,11 +50,10 @@ def sidebar_menu(request):
         },
         {
             'name': 'About Us',
-            'url_name': 'about',  
+            'url_name': 'about',
             'icon_class': 'fas fa-info-circle',
             'active_block': 'nav_about_active',
             'tooltip': 'About Us',
-            'login_required': True
         },
     ]
 

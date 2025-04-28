@@ -232,9 +232,10 @@ def remove_from_cart(request, book_id):
 
 def aboutUs(request):
     context = {
-        'active_nav_item': 'aboutUs'
+        'active_nav_item': 'about'
     }
     return render(request, 'bookMng/about_us.html', context)
+
 
 def update_cart(request):
     if request.method == 'POST':
