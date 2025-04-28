@@ -1,44 +1,69 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block sidenav %}
-   {% for item in item_list %}
-      <li>
-        <a href="{{ item.link }}">  {{ item.item }} </a>
-      </li>
-   {% endfor %}
-{% endblock sidenav %}
+{% block title %}Shopping Cart{% endblock %}
+{% block page_title %}Shopping Cart{% endblock %}
 
 {% block content %}
-   <h1>Display Cart</h1>
-   <table border="2" >
-      <tr>
-          <th>
-              Book Name
-          </th>
-          <th>
-              Book Price
-          </th>
-          <th>
-              User Name
-          </th>
-          <th>Quantity</th>
-      </tr>
-   {% for cart_item in cart_items %}
-       <tr>
-         <td>
-        <a href="book_detail/{{ cart_item.id }}">  {{ cart_item.item.name }} </a>
-         </td>
-         <td>
-            {{ cart_item.item.price }}
-         </td>
-          <td>
-            {{ cart_item.item.username }}
-         </td>
-           <td>{{cart_item.quantity}}</td>
-      </tr>
-   {% endfor %}
+	<h1>Your Shopping Cart</h1>
 
-   </table>
-  <p>Total = {{total}}</p>
+	{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if cart_items %}
+		<form method="post" action="{% url 'updatecart' %}">
+			{% csrf_token %}
+			<table>
+				<thead>
+				<tr>
+					<th>Cover</th>
+					<th>Book Name</th>
+					<th>Unit Price</th>
+					<th>Seller</th>
+					<th>Quantity</th>
+					<th>Subtotal</th>
+					<th>Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for cart_item in cart_items %}
+					<tr>
+						<td>
+							{% if cart_item.item.picture %}
+								<img src="{{ cart_item.item.picture.url }}" alt="{{ cart_item.item.name }} Cover" style="width: 50px; height: auto;">
+							{% else %}
+								(No image)
+							{% endif %}
+						</td>
+						<td><a href="{% url 'book_detail' cart_item.item.id %}?from=displaycart">{{ cart_item.item.name }}</a></td>
+						<td>${{ cart_item.item.price }}</td>
+						<td>{{ cart_item.item.username.username }}</td>
+						<td>
+							<input type="number" name="quantity_{{ cart_item.item.id }}" value="{{ cart_item.quantity }}" min="0"
+							       class="cart-quantity-input" style="width: 60px;">
+						</td>
+						<td>${{ cart_item.getPrice|floatformat:2 }}</td>
+						<td>
+							<a href="{% url 'removefromcart' cart_item.item.id %}" class="button button-danger"
+							   onclick="return confirm('Are you sure you want to remove this item from your cart?');">
+								<i class="fas fa-trash-alt"></i> Remove
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<button type="submit" class="button"><i class="fas fa-sync-alt"></i> Update Quantities</button>
+		</form>
+		<h3 style="margin-top: 20px;">Total: ${{ total|floatformat:2 }}</h3>
+	{% else %}
+		<p>Your shopping cart is empty.</p>
+		<a href="{% url 'displaybooks' %}" class="button"><i class="fas fa-book-open"></i> Continue Shopping</a>
+	{% endif %}
+
 {% endblock content %}
