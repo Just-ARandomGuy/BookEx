@@ -1,0 +1,55 @@
+.about-us-container {
+    color: var(--text-color-dark);
+}
+
+.about-us-container h1 {
+    margin-bottom: 1em;
+    color: var(--text-color-dark);
+}
+
+.about-us-container p {
+    line-height: 1.7;
+    margin-bottom: 1.2em;
+}
+
+.about-us-container ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.about-us-container li {
+    position: relative;
+    padding-left: 2em;
+    margin-bottom: 0.8em;
+    line-height: 1.6;
+}
+
+.about-us-container li::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: var(--secondary-color);
+
+    position: absolute;
+    left: 0;
+    top: 2px;
+    font-size: 0.9em;
+}
+
+.about-us-container strong {
+    font-weight: 600;
+
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .about-us-container h1,
+body.dark-mode .about-us-container p,
+body.dark-mode .about-us-container strong {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .about-us-container li::before {
+    color: var(--secondary-color);
+}
