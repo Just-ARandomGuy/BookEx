@@ -1,0 +1,92 @@
+.main-content-area.split-layout {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+.split-layout-container {
+    min-height: 100vh;
+    display: flex;
+}
+
+.split-content {
+    width: 30%;
+    padding: 40px 50px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.split-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 70%;
+    z-index: 1;
+}
+
+.split-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.split-content h1 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    text-align: center;
+    color: var(--text-color-dark);
+}
+
+.split-content .messages {
+    margin-bottom: 1em;
+}
+
+.split-content form {
+    width: 100%;
+}
+
+.split-content form table {
+    width: 100%;
+}
+
+.split-content form th {
+    color: var(--text-color-dark);
+    padding-right: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.split-content form td {
+    vertical-align: top;
+}
+
+.split-content input[type="text"],
+.split-content input[type="password"],
+.split-content input[type="email"],
+.split-content input[type="url"],
+.split-content input[type="number"],
+.split-content select,
+.split-content textarea {
+    width: 100%;
+}
+
+.split-content form tr:last-child td {
+    text-align: center;
+    padding-top: 1.5em;
+}
+
+.split-content .button {
+
+    margin: 0 5px;
+}
+
+body.dark-mode .split-content h1,
+body.dark-mode .split-content form th {
+    color: var(--text-color-dark);
+}
