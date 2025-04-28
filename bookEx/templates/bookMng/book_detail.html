@@ -13,7 +13,7 @@
 			<th> Book Cover</th>
 			<th> Book Name</th>
 			<th> Book Price</th>
-			<th> User</th>
+			<th> Seller</th>
 			<th> Book Post Date</th>
 			<th> Book Website</th>
 			<th> Action</th>
@@ -28,10 +28,23 @@
 			<td> {{ book.publishdate }} </td>
 			<td> {{ book.web }} </td>
 			<td>
-				<form method="post" action="{% url 'addtocart' book.id %}">
-					{% csrf_token %}
-					<button type="submit">Add to Cart</button>
-				</form>
+				{% if user.is_authenticated %}
+					{% if book.username == user %}
+						<span class="button disabled" style="cursor: not-allowed; background-color: grey;"
+						      title="You cannot add your own book to the cart">You Own This Book</span>
+					{% else %}
+						<form method="post" action="{% url 'addtocart' book.id %}" style="display: inline;">
+							{% csrf_token %}
+							<button type="submit" class="button">
+								<i class="fas fa-cart-plus"></i> Add to Cart
+							</button>
+						</form>
+					{% endif %}
+				{% else %}
+					<a href="{% url 'login' %}?next={{ request.path }}" class="button">
+						<i class="fas fa-sign-in-alt"></i> Login to Add
+					</a>
+				{% endif %}
 			</td>
 		</tr>
 		</tbody>

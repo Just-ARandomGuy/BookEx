@@ -380,6 +380,21 @@ body.dark-mode .main-content-area textarea:focus {
     color: var(--error-color);
 }
 
+.messages li.info {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid #31708f;
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+body.dark-mode .messages li.info {
+    border-color: #4a9bc1;
+    background-color: #2c3e50;
+    color: #a6d8f0;
+}
+
 .main-content-area td.field-with-errors input,
 .main-content-area td.field-with-errors textarea,
 .main-content-area td.field-with-errors select {

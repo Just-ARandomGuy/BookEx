@@ -166,32 +166,38 @@ def displayCart(request):
 
 
 def addtocart(request, book_id):
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.error(request, 'You must be logged in to add books to cart!')
-            return redirect('book_detail', book_id=book_id)
+    if request.method != 'POST':
+        return redirect('book_detail', book_id=book_id)
 
-        book = Book.objects.get(id=book_id)
-        cart, created = ShoppingCart.objects.get_or_create(username=request.user)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
-        if not created:
-            cart_item.quantity += 1
-            cart_item.save()
-    return render(request,
-                  'bookMng/displaybooks.html',
-                  {
-                      'books': Book.objects.all()
-                  })
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to add books to cart!')
+        login_url = reverse('login')
+        book_detail_url = reverse('book_detail', args=[book_id])
+        return redirect(f'{login_url}?next={book_detail_url}')
+
+    book = get_object_or_404(Book, id=book_id)
+
+    if book.username == request.user:
+        messages.error(request, 'You cannot buy your own books!')
+        return redirect('book_detail', book_id=book_id)
+
+    cart, created = ShoppingCart.objects.get_or_create(username=request.user)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    messages.success(request, f"Added '{book.name}' to your cart.")
+    return redirect('displayCart')
 
 
-@login_required
 def remove_from_cart(request, book_id):
     cart = get_object_or_404(ShoppingCart, username=request.user)
     cart_item = get_object_or_404(CartItem, cart=cart, item__id=book_id)
 
     book_name = cart_item.item.name
     cart_item.delete()
-    messages.success(request, f"'{book_name}' removed from your cart.")
+    messages.info(request, f"'{book_name}' has been removed from your cart.")
     return redirect('displayCart')
 
 
