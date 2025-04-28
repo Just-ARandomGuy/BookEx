@@ -165,6 +165,11 @@ def displayCart(request):
 
 def addtocart(request, book_id):
     if request.method == 'POST':
+
+        if not request.user.is_authenticated:
+            messages.error(request, 'You must be logged in to add books to cart!')
+            return redirect('book_detail', book_id=book_id)
+
         book = Book.objects.get(id=book_id)
         cart, created = ShoppingCart.objects.get_or_create(username=request.user)
         cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
