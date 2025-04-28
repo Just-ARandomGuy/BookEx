@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.http import JsonResponse
@@ -159,20 +160,77 @@ def displayCart(request):
                   'bookMng/displayCart.html',
                   {
                       'cart_items': cart_items,
-                      'total': total
+                      'total': total,
+                      'active_nav_item': 'displayCart',
                   })
 
 
 def addtocart(request, book_id):
+    if request.method != 'POST':
+        return redirect('book_detail', book_id=book_id)
+
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to add books to cart!')
+        login_url = reverse('login')
+        book_detail_url = reverse('book_detail', args=[book_id])
+        return redirect(f'{login_url}?next={book_detail_url}')
+
+    book = get_object_or_404(Book, id=book_id)
+
+    if book.username == request.user:
+        messages.error(request, 'You cannot buy your own books!')
+        return redirect('book_detail', book_id=book_id)
+
+    cart, created = ShoppingCart.objects.get_or_create(username=request.user)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    messages.success(request, f"Added '{book.name}' to your cart.")
+    return redirect('displayCart')
+
+
+def remove_from_cart(request, book_id):
+    cart = get_object_or_404(ShoppingCart, username=request.user)
+    cart_item = get_object_or_404(CartItem, cart=cart, item__id=book_id)
+
+    book_name = cart_item.item.name
+    cart_item.delete()
+    messages.info(request, f"'{book_name}' has been removed from your cart.")
+    return redirect('displayCart')
+
+
+def update_cart(request):
     if request.method == 'POST':
-        book = Book.objects.get(id=book_id)
-        cart, created = ShoppingCart.objects.get_or_create(username=request.user)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, item=book)
-        if not created:
-            cart_item.quantity += 1
-            cart_item.save()
-    return render(request,
-                  'bookMng/displaybooks.html',
-                  {
-                      'books': Book.objects.all()
-                  })
+        cart = get_object_or_404(ShoppingCart, username=request.user)
+        items_updated = 0
+        items_removed = 0
+
+        post_keys = list(request.POST.keys())
+
+        for key in post_keys:
+            if key.startswith('quantity_'):
+                try:
+                    book_id_str = key.split('_')[1]
+                    book_id = int(book_id_str)
+                    quantity = int(request.POST[key])
+                    cart_item = CartItem.objects.get(cart=cart, item_id=book_id)
+                    book_name = cart_item.item.name
+
+                    if quantity < 1:
+                        cart_item.delete()
+                        messages.info(request, f"'{book_name}' has been removed from your cart.")
+                        items_removed += 1
+                    elif cart_item.quantity != quantity:
+                        cart_item.quantity = quantity
+                        cart_item.save()
+                        items_updated += 1
+                except (ValueError, CartItem.DoesNotExist, IndexError):
+                    messages.error(request, f'Error updating quantity for item ID {book_id_str}.'
+                                            f' Item might not be in your cart or data is invalid.')
+
+        # if items_updated > 0:
+        #     messages.success(request, f"Cart updated successfully. "
+        #                               f"{items_updated} item quantity(s) changed.")
+    return redirect('displayCart')

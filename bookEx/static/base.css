@@ -380,6 +380,21 @@ body.dark-mode .main-content-area textarea:focus {
     color: var(--error-color);
 }
 
+.messages li.info {
+    list-style-type: none;
+    padding: 10px;
+    margin: 20px 20px 20px 0;
+    border: 1px solid #31708f;
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+body.dark-mode .messages li.info {
+    border-color: #4a9bc1;
+    background-color: #2c3e50;
+    color: #a6d8f0;
+}
+
 .main-content-area td.field-with-errors input,
 .main-content-area td.field-with-errors textarea,
 .main-content-area td.field-with-errors select {
@@ -613,6 +628,66 @@ body.dark-mode #postbook-form td.field-with-errors input:focus {
 #login-form tr:last-child td a.button {
     margin-left: 0;
     margin-right: 10px;
+}
+
+/* shopping cart */
+.empty-cart-container {
+    text-align: center;
+    padding: 50px 20px;
+    margin-top: 30px;
+    background-color: var(--card-bg-color);
+    border: 1px dashed var(--input-border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    transition: background-color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
+}
+
+.empty-cart-icon {
+    font-size: 5em;
+    color: var(--input-border-color);
+    margin-bottom: 25px;
+    display: block;
+    transition: color var(--transition-speed-fast) ease;
+}
+
+.empty-cart-text {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+    transition: color var(--transition-speed-fast) ease;
+}
+
+.empty-cart-subtext {
+    font-size: 1em;
+    color: var(--text-color-dark);
+    opacity: 0.7;
+    margin-bottom: 30px;
+    transition: color var(--transition-speed-fast) ease, opacity var(--transition-speed-fast) ease;
+}
+
+.empty-cart-button {
+    padding: 12px 25px;
+    font-size: 1.1em;
+}
+
+
+body.dark-mode .empty-cart-container {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: var(--input-border-color);
+}
+
+body.dark-mode .empty-cart-icon {
+    color: var(--input-border-color);
+}
+
+body.dark-mode .empty-cart-text {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .empty-cart-subtext {
+    color: var(--text-color-dark);
+    opacity: 0.6;
 }
 
 /* misc */
