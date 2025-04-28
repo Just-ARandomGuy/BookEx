@@ -41,11 +41,11 @@
 							{% endif %}
 						</td>
 						<td><a href="{% url 'book_detail' cart_item.item.id %}?from=displaycart">{{ cart_item.item.name }}</a></td>
-						<td>${{ cart_item.item.price }}</td>
+						<td>${{ cart_item.item.price|floatformat:2 }}</td>
 						<td>{{ cart_item.item.username.username }}</td>
 						<td>
 							<input type="number" name="quantity_{{ cart_item.item.id }}" value="{{ cart_item.quantity }}" min="0"
-							       class="cart-quantity-input" style="width: 60px;">
+							       style="width: 60px;">
 						</td>
 						<td>${{ cart_item.getPrice|floatformat:2 }}</td>
 						<td>
@@ -59,11 +59,18 @@
 				</tbody>
 			</table>
 			<button type="submit" class="button"><i class="fas fa-sync-alt"></i> Update Quantities</button>
+			<h3 style="margin-top: 20px;">Total: ${{ total|floatformat:2 }}</h3>
 		</form>
-		<h3 style="margin-top: 20px;">Total: ${{ total|floatformat:2 }}</h3>
+
 	{% else %}
-		<p>Your shopping cart is empty.</p>
-		<a href="{% url 'displaybooks' %}" class="button"><i class="fas fa-book-open"></i> Continue Shopping</a>
+		<div class="empty-cart-container">
+			<i class="fas fa-shopping-cart empty-cart-icon"></i>
+			<p class="empty-cart-text">Your shopping cart is empty.</p>
+			<p class="empty-cart-subtext">Looks like you haven't added any books yet!</p>
+			<a href="{% url 'displaybooks' %}" class="button empty-cart-button">
+				<i class="fas fa-book-open"></i> Continue Shopping
+			</a>
+		</div>
 	{% endif %}
 
 {% endblock content %}
