@@ -357,6 +357,11 @@ body {
     transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
 }
 
+.modal-content a {
+    text-decoration: none;
+    color: var(--text-color-dark);
+}
+
 .close-button {
     color: #aaa;
     position: absolute;
@@ -399,8 +404,8 @@ body {
     display: inline-block;
 }
 
-.modal-content a {
-    color: var(--text-color-dark);
+.modal-content a.button {
+    color: var(--text-color-light);
     text-decoration: none;
 }
 
