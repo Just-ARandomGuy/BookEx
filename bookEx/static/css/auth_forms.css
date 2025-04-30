@@ -56,8 +56,12 @@ body.dark-mode .auth-form-container {
 .auth-form-container h1 {
     text-align: center;
     margin-bottom: 1.5em;
-    color: #0E141B;
+    color: var(--text-color-dark);
     font-weight: 600;
+}
+
+body.dark-mode .auth-form-container h1 {
+    color: var(--text-color-light);
 }
 
 /* form styling */
@@ -75,10 +79,14 @@ body.dark-mode .auth-form-container {
 .auth-form label {
     display: block;
     margin-bottom: 0.4em;
-    color: #5AAEBD;
+    color: var(--text-color-dark);
     font-weight: 500;
     font-size: 0.95em;
     padding-left: 5px;
+}
+
+.auth-form li {
+    color: var(--text-color-dark);
 }
 
 /* input fields */
@@ -189,7 +197,7 @@ body.dark-mode .auth-switch-link a:hover {
 
 .auth-form-container .form-field .helptext {
     font-size: 0.85em;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-color-dark);
     opacity: 0.9;
     display: block;
     margin-top: 0.5em;
