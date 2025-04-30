@@ -1,97 +1,62 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Register - BookEx{% endblock %}
-
 {% block page_styles %}
-	<link rel="stylesheet" href="{% static 'css/split_layout.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/auth_forms.css' %}" type="text/css">
 {% endblock page_styles %}
 
-{% block page_specific_main_class %}split-layout{% endblock %}
+{% block page_specific_main_class %}auth-layout auth-register{% endblock %}
 
 {% block page_title %}Create Your Account{% endblock %}
 
 {% block content %}
-	<div class="split-layout-container">
+	<div class="auth-form-container">
+		<h1>Create Account</h1>
 
-		<div class="split-content">
-			<h1>Create Account</h1>
+		{% if messages %}
+			<ul class="messages">
+				{% for message in messages %}
+					<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 
-			{% if messages %}
-				<ul class="messages">
-					{% for message in messages %}
-						<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
+		{% if form.non_field_errors %}
+			<ul class="errorlist nonfield">
+				{% for error in form.non_field_errors %}
+					<li>{{ error }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 
-			{% if form.non_field_errors %}
-				<ul class="errorlist nonfield">
-					{% for error in form.non_field_errors %}
-						<li>{{ error }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
+		<form action="{% url 'register' %}" method="post" class="auth-form">
+			{% csrf_token %}
 
-			<form action="{% url 'register' %}" method="post">
-				{% csrf_token %}
-				<table id="register-form">
-					{{ form.as_table }}
+			{% for field in form %}
+				<div class="form-field">
+					{{ field.label_tag }}
+					{{ field }}
+					{% if field.errors %}
+						<ul class="errorlist">
+							{% for error in field.errors %}
+								<li>{{ error }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+					{% if field.help_text %}
+						<p class="helptext">{{ field.help_text|safe }}</p>
+					{% endif %}
+				</div>
+			{% endfor %}
 
-					<tr>
-						<th></th>
-						<td>
-							<button type="submit" class="button">
-								<i class="fas fa-user-plus"></i> Create Account
-							</button>
-						</td>
-					</tr>
-				</table>
-			</form>
+			<button type="submit" class="button auth-button">
+				<i class="fas fa-user-plus"></i> Create Account
+			</button>
 
-			<p style="text-align: center; margin-top: 1.5em;">
+			<p class="auth-switch-link">
 				Already have an account? <a href="{% url 'login' %}">Log In Here</a>
 			</p>
-
-		</div>
-
-
-		<div class="split-banner">
-			<img src="{% static 'wallhaven-j8mqyp.jpg' %}" alt="">
-		</div>
-
+		</form>
 	</div>
-
-	<style>
-        #register-form td ul.errorlist {
-            color: var(--error-color);
-            margin: 0.2em 0 0 0;
-            padding-left: 10px;
-            list-style: none;
-            font-size: 0.9em;
-        }
-
-        ul.errorlist.nonfield {
-            padding: 10px;
-            margin-bottom: 1em;
-            list-style: none;
-            background-color: var(--error-bg-color);
-            color: var(--error-color);
-            border: 1px solid var(--error-border-color);
-            border-radius: 4px;
-        }
-
-        #register-form td .helptext {
-            font-size: 0.85em;
-            color: var(--text-color-dark);
-            opacity: 0.8;
-            display: block;
-            margin-top: 0.3em;
-        }
-
-        body.dark-mode #register-form td .helptext {
-            color: var(--text-color-dark);
-        }
-	</style>
 
 {% endblock content %}
