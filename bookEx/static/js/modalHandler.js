@@ -184,8 +184,9 @@ function closeModal() {
 
 document.addEventListener('click', function (event) {
     const bookTrigger = event.target.closest('[data-book-id]');
+    const ratingTrigger = event.target.closest('.star-rating');
 
-    if (bookTrigger) {
+    if (bookTrigger && !ratingTrigger) {
         event.preventDefault();
         const bookId = bookTrigger.dataset.bookId;
         openModalWithBook(bookId);
