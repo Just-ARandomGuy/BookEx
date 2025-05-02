@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.db.models import Q, Avg
+from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.generic.edit import CreateView
@@ -49,18 +50,25 @@ def postbook(request):
 
 
 def displaybooks(request):
-    books_qs = Book.objects.all().select_related('username')
+    base_qs = Book.objects.select_related('username')
 
-    from django.db.models.functions import Coalesce
-    books_qs = books_qs.annotate(
+    favorites_only = False
+    if request.user.is_authenticated and request.GET.get('favorites') == 'on':
+        filtered_qs = base_qs.filter(favorited_by=request.user)
+        favorites_only = True
+    else:
+        filtered_qs = base_qs
+
+    books_qs = filtered_qs.annotate(
         average_rating=Coalesce(Avg('ratings__score'), 0.0)
-    )
+    ).prefetch_related('ratings')
 
     user_ratings = {}
     if request.user.is_authenticated:
+        book_ids_in_queryset = books_qs.values_list('id', flat=True)
         ratings_qs = Rating.objects.filter(
             user=request.user,
-            book__in=books_qs
+            book_id__in=book_ids_in_queryset
         ).values('book_id', 'score')
         user_ratings = {rating['book_id']: rating['score'] for rating in ratings_qs}
 
@@ -71,7 +79,8 @@ def displaybooks(request):
 
     context = {
         'books': processed_books,
-        'active_nav_item': 'displaybooks'
+        'active_nav_item': 'displaybooks',
+        'favorites_filter_active': favorites_only,
     }
     return render(request, 'bookMng/displaybooks.html', context)
 
@@ -114,8 +123,18 @@ def booksearch_ajax(request):
 
 
 def get_book_detail_json(request, book_id):
-    book = Book.objects.select_related('username').get(id=book_id)
+    try:
+        book = Book.objects.select_related('username').prefetch_related('favorited_by').get(id=book_id)
+    except Book.DoesNotExist:
+        return JsonResponse({'error': 'Book not found.'}, status=404)
+
     is_owner = request.user.is_authenticated and book.username == request.user
+    is_favorite = book.favorited_by.filter(id=request.user.id).exists()
+    toggle_favorite_url = None
+
+    if request.user.is_authenticated:
+        is_favorite = book.favorited_by.filter(id=request.user.id).exists()
+        toggle_favorite_url = reverse('toggle_favorite', args=[book.id])
 
     data = {
         'id': book.id,
@@ -128,6 +147,8 @@ def get_book_detail_json(request, book_id):
         'is_authenticated': request.user.is_authenticated,
         'is_owner': is_owner,
         'add_to_cart_url': reverse('addtocart', args=[book.id]) if request.user.is_authenticated and not is_owner else None,
+        'is_favorite': is_favorite,
+        'toggle_favorite_url': toggle_favorite_url,
     }
 
     if not data['is_authenticated']:
@@ -298,4 +319,36 @@ def rate_book(request, book_id):
         return JsonResponse({'success': False, 'error': 'Invalid score value provided.'}, status=400)
     except Exception as e:
         print(f"Error rating book: {e}")
+        return JsonResponse({'success': False, 'error': 'An server error occurred.'}, status=500)
+
+
+@require_POST
+def toggle_favorite(request, book_id):
+    if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'success': False, 'message': 'Invalid request type.'}, status=400)
+
+    try:
+        book = get_object_or_404(Book, id=book_id)
+
+        is_favorite = False
+        if book.favorited_by.filter(id=request.user.id).exists():
+            book.favorited_by.remove(request.user)
+            message = f"'{book.name}' removed from favorites."
+            is_favorite = False
+        else:
+            book.favorited_by.add(request.user)
+            message = f"'{book.name}' added to favorites."
+            is_favorite = True
+
+        return JsonResponse({
+            'success': True,
+            'message': message,
+            'is_favorite': is_favorite,
+            'book_id': book_id
+        })
+
+    except Book.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Book not found.'}, status=404)
+    except Exception as e:
+        print(f"Error toggling favorite: {e}")
         return JsonResponse({'success': False, 'error': 'An server error occurred.'}, status=500)

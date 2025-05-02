@@ -357,6 +357,28 @@ body {
     transition: background-color var(--transition-speed-fast) ease, color var(--transition-speed-fast) ease, border-color var(--transition-speed-fast) ease;
 }
 
+.modal-content .favorite-toggle-button {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: var(--text-color-light);
+    margin-left: 10px;
+}
+
+.modal-content .favorite-toggle-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.modal-content .favorite-toggle-button.is-favorite {
+    background-color: #e44d82;
+    border-color: #e44d82;
+}
+
+.modal-content .favorite-toggle-button.is-favorite:hover {
+    background-color: #d83a72;
+    border-color: #c93066;
+}
+
 .modal-content a {
     text-decoration: none;
     color: var(--text-color-dark);

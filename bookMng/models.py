@@ -11,6 +11,7 @@ class Book(models.Model):
     publishdate = models.DateField(auto_now_add=True)
     picture = models.FileField(upload_to='uploads')
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    favorited_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='favorite_books', blank=True)
 
 
 # This is the model for the user shopping cart

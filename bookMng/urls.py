@@ -16,4 +16,5 @@ urlpatterns = [
     path('aboutus', views.aboutUs, name='about'),
     path('api/book_detail/<int:book_id>/', views.get_book_detail_json, name='get_book_detail_json'),
     path('rate_book/<int:book_id>', views.rate_book, name='rate_book'),
+    path('toggle_favorite/<int:book_id>', views.toggle_favorite, name='toggle_favorite'),
 ]

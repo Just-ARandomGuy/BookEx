@@ -13,14 +13,33 @@
 {% block content %}
 	<h1>Display Books</h1>
 
-	<form id="searchForm">
-		<input type="text"
-		       id="searchInput"
-		       placeholder="Search Books..."
-		       data-search-url="{% url 'booksearch_ajax' %}"
-		>
-
+	<form id="searchForm" onsubmit="event.preventDefault();">
+		<div class="search-filter-container">
+			<div class="search-input-wrapper">
+				<i class="fas fa-search search-icon"></i>
+				<input type="text"
+				       id="searchInput"
+				       class="search-input"
+				       placeholder="Search by book title or seller..."
+				       data-search-url="{% url 'booksearch_ajax' %}"
+				       aria-label="Search Books" value="{{ request.GET.query|default:'' }}">
+			</div>
+			{% if user.is_authenticated %}
+				<div class="favorites-filter-toggle">
+					<label for="favorites-toggle" class="toggle-switch-label">
+						<label for="favorites-toggle" class="toggle-switch-label" title="Toggle showing only favorite books">
+							<i class="fas fa-heart favorite-icon-toggle"></i>
+							<input type="checkbox"
+							       id="favorites-toggle"
+							       name="favorites"
+							       {% if favorites_filter_active %}checked{% endif %}>
+							<span class="toggle-switch-visual"></span>
+						</label>
+				</div>
+			{% endif %}
+		</div>
 	</form>
+
 
 	<table>
 		<thead>
@@ -100,4 +119,5 @@
 {% block page_scripts %}
 	<script src="{% static 'js/bookSearch.js' %}"></script>
 	<script src="{% static 'js/bookRating.js' %}"></script>
+	<script src="{% static 'js/displayBooksFilter.js' %}"></script>
 {% endblock %}
