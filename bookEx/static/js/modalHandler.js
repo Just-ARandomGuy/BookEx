@@ -9,24 +9,32 @@ const modalActionArea = document.getElementById('modalActionArea');
 const modalMessages = document.getElementById('modalMessages');
 
 function getCsrfToken() {
-    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!token) {
+        token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+    }
+    if (!token) {
+        console.error('CSRF token not found!');
+    }
+    return token;
 }
 
-// status messages like added to cart, etc. clears after timeout
 function showModalMessage(text, type = 'info') {
     modalMessages.innerHTML = `<div class="message ${type}">${text}</div>`;
+    // clears the message after timeout
     setTimeout(() => {
-        modalMessages.innerHTML = '';
+        if (modalMessages.firstChild && modalMessages.firstChild.textContent === text) {
+            modalMessages.innerHTML = '';
+        }
     }, 5000);
 }
-
 
 function openModalWithBook(bookId) {
     if (!modal) return;
 
-    // fallback
     modalTitle.textContent = 'Loading...';
-    modalImage.src = '';
+    modalImage.src = '/static/images/placeholder_cover.png';
+    modalImage.alt = 'Loading book cover...';
     modalPrice.textContent = '...';
     modalSeller.textContent = '...';
     modalDate.textContent = '...';
@@ -53,14 +61,25 @@ function openModalWithBook(bookId) {
             if (data.error) {
                 throw new Error(data.error);
             }
+
             modalTitle.textContent = data.name;
-            modalImage.src = data.picture_url ? data.picture_url : '/static/default_book_cover.png';
+            modalImage.src = data.picture_url ? data.picture_url : '/static/images/placeholder_cover.png';
             modalImage.alt = `Cover for ${data.name}`;
             modalPrice.textContent = data.price;
             modalSeller.textContent = data.seller;
             modalDate.textContent = data.publishdate;
-            modalWebLink.textContent = data.web;
-            modalWebLink.href = data.web;
+            modalWebLink.textContent = data.web || 'N/A';
+            modalWebLink.href = data.web || '#';
+            if (!data.web) {
+                modalWebLink.style.pointerEvents = 'none';
+                modalWebLink.style.textDecoration = 'none';
+                modalWebLink.style.opacity = '0.7';
+            } else {
+                modalWebLink.style.pointerEvents = '';
+                modalWebLink.style.textDecoration = '';
+                modalWebLink.style.opacity = '';
+            }
+
 
             modalActionArea.innerHTML = '';
 
@@ -71,9 +90,7 @@ function openModalWithBook(bookId) {
                         deleteForm.method = 'post';
                         deleteForm.action = data.delete_url;
                         deleteForm.style.display = 'inline';
-                        deleteForm.onsubmit = function () {
-                            return confirm('Are you sure you want to delete this book? This action cannot be undone.');
-                        };
+                        deleteForm.onsubmit = () => confirm('Are you sure you want to delete this book? This action cannot be undone.');
 
                         const csrfInput = document.createElement('input');
                         csrfInput.type = 'hidden';
@@ -83,36 +100,51 @@ function openModalWithBook(bookId) {
 
                         const deleteButton = document.createElement('button');
                         deleteButton.type = 'submit';
-                        deleteButton.className = 'button button-danger'; // Use danger style
+                        deleteButton.className = 'button button-danger';
                         deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete Book';
                         deleteForm.appendChild(deleteButton);
 
                         modalActionArea.appendChild(deleteForm);
                     }
-
                 } else {
-                    const form = document.createElement('form');
-                    form.method = 'post';
-                    form.action = data.add_to_cart_url;
-                    form.style.display = 'inline';
-                    form.addEventListener('submit', handleAddToCart); // Use existing AJAX handler
+                    if (data.add_to_cart_url) {
+                        const cartForm = document.createElement('form');
+                        cartForm.method = 'post';
+                        cartForm.action = data.add_to_cart_url;
+                        cartForm.style.display = 'inline';
+                        cartForm.addEventListener('submit', handleAddToCart);
 
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = 'csrfmiddlewaretoken';
-                    csrfInput.value = getCsrfToken();
-                    form.appendChild(csrfInput);
+                        const csrfInputCart = document.createElement('input');
+                        csrfInputCart.type = 'hidden';
+                        csrfInputCart.name = 'csrfmiddlewaretoken';
+                        csrfInputCart.value = getCsrfToken();
+                        cartForm.appendChild(csrfInputCart);
 
-                    const button = document.createElement('button');
-                    button.type = 'submit';
-                    button.className = 'button';
-                    button.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
-                    form.appendChild(button);
-
-                    modalActionArea.appendChild(form);
+                        const cartButton = document.createElement('button');
+                        cartButton.type = 'submit';
+                        cartButton.className = 'button';
+                        cartButton.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+                        cartForm.appendChild(cartButton);
+                        modalActionArea.appendChild(cartForm);
+                    }
+                }
+                if (data.toggle_favorite_url) {
+                    const favButton = document.createElement('button');
+                    favButton.type = 'button';
+                    favButton.className = 'button favorite-toggle-button';
+                    favButton.dataset.url = data.toggle_favorite_url;
+                    favButton.dataset.bookId = data.id;
+                    favButton.innerHTML = data.is_favorite
+                        ? '<i class="fas fa-heart"></i> Unfavorite'
+                        : '<i class="far fa-heart"></i> Favorite';
+                    if (data.is_favorite) favButton.classList.add('is-favorite');
+                    favButton.addEventListener('click', handleToggleFavorite);
+                    modalActionArea.appendChild(favButton);
                 }
             } else {
-                modalActionArea.innerHTML = `<a href="${data.login_url}" class="button"><i class="fas fa-sign-in-alt"></i> Login to Interact</a>`;
+                if (data.login_url) {
+                    modalActionArea.innerHTML = `<a href="${data.login_url}" class="button"><i class="fas fa-sign-in-alt"></i> Login to Interact</a>`;
+                }
             }
         })
         .catch(error => {
@@ -120,14 +152,83 @@ function openModalWithBook(bookId) {
             modalTitle.textContent = 'Error';
             modalActionArea.innerHTML = '';
             showModalMessage(`Could not load book details: ${error.message}`, 'error');
-            modalImage.src = '/static/default_book_cover.png';
+            modalImage.src = '/static/images/placeholder_cover.png';
+            modalImage.alt = 'Error loading cover';
             modalPrice.textContent = 'N/A';
             modalSeller.textContent = 'N/A';
             modalDate.textContent = 'N/A';
             modalWebLink.textContent = 'N/A';
             modalWebLink.href = '#';
-
         });
+}
+
+async function handleToggleFavorite(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = event.currentTarget;
+    const url = button.dataset.url;
+    const bookId = button.dataset.bookId;
+
+    if (!url || !bookId) {
+        console.error('Toggle favorite URL or Book ID missing on button.');
+        showModalMessage('Could not perform action: Missing data.', 'error');
+        return;
+    }
+
+    if (button.disabled) {
+        return;
+    }
+
+    button.disabled = true;
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    modalMessages.innerHTML = '';
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            let errorMsg = `HTTP error! Status: ${response.status}`;
+            try {
+                const errData = await response.json();
+                errorMsg = errData.message || errData.error || errorMsg;
+            } catch (e) {
+            }
+            throw new Error(errorMsg);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            button.innerHTML = data.is_favorite ? '<i class="fas fa-heart"></i> Unfavorite' : '<i class="far fa-heart"></i> Favorite';
+            button.classList.toggle('is-favorite', data.is_favorite);
+            showModalMessage(data.message, 'success');
+
+            if (!data.is_favorite) {
+                const favoritesToggle = document.getElementById('favorites-toggle');
+                if (favoritesToggle && favoritesToggle.checked) {
+                    window.location.reload();
+                }
+            }
+        } else {
+            throw new Error(data.message || data.error || 'Action failed on server.');
+        }
+
+    } catch (error) {
+        console.error('Error during toggle favorite fetch:', error);
+        showModalMessage(`Error: ${error.message || 'Could not toggle favorite.'}`, 'error');
+        button.innerHTML = originalHtml;
+    } finally {
+        button.disabled = false;
+    }
 }
 
 async function handleAddToCart(event) {
@@ -137,6 +238,8 @@ async function handleAddToCart(event) {
     const formData = new FormData(form);
 
     const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton.disabled) return;
+
     submitButton.disabled = true;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
     modalMessages.innerHTML = '';
@@ -147,19 +250,21 @@ async function handleAddToCart(event) {
             body: formData,
             headers: {
                 'X-CSRFToken': getCsrfToken(),
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            throw new Error(data.message || data.error || `HTTP error! Status: ${response.status}`);
         }
-
 
         if (data.success) {
             showModalMessage(data.message, 'success');
+        } else {
+            throw new Error(data.message || data.error || 'Could not add to cart.');
         }
 
     } catch (error) {
@@ -171,22 +276,18 @@ async function handleAddToCart(event) {
     }
 }
 
-
 function closeModal() {
     if (modal) {
         modal.style.display = 'none';
-        modalTitle.textContent = '';
-        modalImage.src = '';
-        modalActionArea.innerHTML = '';
-        modalMessages.innerHTML = '';
     }
 }
 
 document.addEventListener('click', function (event) {
     const bookTrigger = event.target.closest('[data-book-id]');
     const ratingTrigger = event.target.closest('.star-rating');
+    const actionButtonTrigger = event.target.closest('#modalActionArea button, #modalActionArea a.button');
 
-    if (bookTrigger && !ratingTrigger) {
+    if (bookTrigger && !ratingTrigger && !actionButtonTrigger && !modal.contains(bookTrigger)) {
         event.preventDefault();
         const bookId = bookTrigger.dataset.bookId;
         openModalWithBook(bookId);
@@ -195,10 +296,14 @@ document.addEventListener('click', function (event) {
     if (event.target === modal) {
         closeModal();
     }
+
+    if (event.target.classList.contains('close-button')) {
+        closeModal();
+    }
 });
 
 document.addEventListener('keydown', function (event) {
-    if (event.key === "Escape" && modal.style.display === 'block') {
+    if (event.key === "Escape" && modal && modal.style.display === 'block') {
         closeModal();
     }
 });
