@@ -98,101 +98,84 @@ body.dark-mode .favorites-filter-placeholder {
     cursor: not-allowed;
 }
 
-/* filter toggle */
 .favorites-filter-toggle {
-    /* Keep existing flex alignment, but adjust gap if needed */
-    gap: 12px; /* Slightly increase gap for visual balance */
+    gap: 12px;
 }
 
+/* favorites toggle */
 .toggle-switch-label {
     cursor: pointer;
-    display: inline-flex; /* Align text and switch horizontally */
+    display: inline-flex;
     align-items: center;
-    gap: 8px; /* Space between text and the visual switch */
-    user-select: none; /* Prevent text selection on click */
-    position: relative; /* Needed for absolute positioning of input */
-    padding: 5px 0; /* Add some vertical padding if needed */
+    gap: 8px;
+    user-select: none;
+    position: relative;
+    padding: 5px 0;
 }
 
-/* Hide the actual checkbox visually but keep it functional */
 .toggle-switch-label input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
-    pointer-events: none; /* Not strictly necessary when opacity is 0 */
+    pointer-events: none;
 }
 
-/* Style the visual container (the track) */
 .toggle-switch-visual {
     display: inline-block;
-    position: relative; /* For positioning the knob */
-    width: 44px; /* Width of the switch track */
-    height: 22px; /* Height of the switch track */
-    background-color: #ccc; /* Default background (off state) */
-    border-radius: 11px; /* Fully rounded ends */
+    position: relative;
+    width: 44px;
+    height: 22px;
+    background-color: #ccc;
+    border-radius: 11px;
     transition: background-color 0.3s ease-in-out;
-    flex-shrink: 0; /* Prevent shrinking in flex layout */
+    flex-shrink: 0;
 }
 
-/* Style the knob (the circle) using ::after pseudo-element */
 .toggle-switch-visual::after {
     content: '';
     position: absolute;
-    top: 2px; /* Positioning within the track */
-    left: 2px; /* Start position (off state) */
-    width: 18px; /* Diameter of the knob */
-    height: 18px; /* Diameter of the knob */
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
     background-color: white;
-    border-radius: 50%; /* Make it a circle */
-    transition: transform 0.3s ease-in-out; /* Animate the movement */
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* --- Checked State --- */
 
-/* Change track background when checkbox is checked */
 .toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual {
-    background-color: var(--active-bg-color); /* Or use a distinct color like #e44d82 for favorites */
-    /* Example using a favorite-pink: background-color: #e44d82; */
+    background-color: var(--active-bg-color);
 }
 
-/* Move the knob to the right when checkbox is checked */
 .toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual::after {
-    transform: translateX(22px); /* Moves the knob (Track Width - Knob Width - 2*Offset) = 44 - 18 - 4 = 22 */
+    transform: translateX(22px);
 }
 
-/* --- Focus State (Accessibility) --- */
-
-/* Add an outline when the hidden checkbox is focused (e.g., via keyboard) */
 .toggle-switch-label input[type="checkbox"]:focus + .toggle-switch-visual {
-    outline: none; /* Remove default */
-    box-shadow: 0 0 0 3px rgba(53, 121, 133, 0.4); /* Use active color with transparency */
-    /* Example using favorite-pink focus: box-shadow: 0 0 0 3px rgba(228, 77, 130, 0.4); */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(53, 121, 133, 0.4);
 }
-
-/* --- Dark Mode Adjustments --- */
 
 body.dark-mode .toggle-switch-visual {
-    background-color: #555; /* Darker grey for off state */
+    background-color: #555;
 }
 
 body.dark-mode .toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual {
-    background-color: var(--active-hover-bg-color); /* Use the lighter active color for 'on' state */
-    /* Example using favorite-pink: background-color: #e44d82; */
+    background-color: var(--active-hover-bg-color);
 }
 
 body.dark-mode .toggle-switch-visual::after {
-    background-color: #ddd; /* Slightly off-white knob */
+    background-color: #ddd;
 }
 
 body.dark-mode .toggle-switch-label input[type="checkbox"]:focus + .toggle-switch-visual {
-    box-shadow: 0 0 0 3px rgba(90, 174, 189, 0.5); /* Use active hover color */
-    /* Example using favorite-pink focus: box-shadow: 0 0 0 3px rgba(228, 77, 130, 0.5); */
+    box-shadow: 0 0 0 3px rgba(90, 174, 189, 0.5);
 }
 
-/* Optional: Adjust label text color in dark mode if needed */
-body.dark-mode .toggle-switch-label span:first-child { /* Target the text span */
+body.dark-mode .toggle-switch-label span:first-child {
     color: var(--text-color-light);
 }
 
