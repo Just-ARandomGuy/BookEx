@@ -26,11 +26,15 @@
 			</div>
 			{% if user.is_authenticated %}
 				<div class="favorites-filter-toggle">
-					<label for="favorites-toggle">Show Favorites Only</label>
-					<input type="checkbox"
-					       id="favorites-toggle"
-					       name="favorites"
-					       {% if favorites_filter_active %}checked{% endif %}>
+					<label for="favorites-toggle" class="toggle-switch-label">
+						<label for="favorites-toggle" class="toggle-switch-label" title="Toggle showing only favorite books">
+							<i class="fas fa-heart favorite-icon-toggle"></i>
+							<input type="checkbox"
+							       id="favorites-toggle"
+							       name="favorites"
+							       {% if favorites_filter_active %}checked{% endif %}>
+							<span class="toggle-switch-visual"></span>
+						</label>
 				</div>
 			{% endif %}
 		</div>

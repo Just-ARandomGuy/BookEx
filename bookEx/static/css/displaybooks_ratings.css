@@ -100,53 +100,100 @@ body.dark-mode .favorites-filter-placeholder {
 
 /* filter toggle */
 .favorites-filter-toggle {
-    display: flex;
+    /* Keep existing flex alignment, but adjust gap if needed */
+    gap: 12px; /* Slightly increase gap for visual balance */
+}
+
+.toggle-switch-label {
+    cursor: pointer;
+    display: inline-flex; /* Align text and switch horizontally */
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background-color: rgba(0, 0, 0, 0.05);
-    font-size: 0.9em;
-    color: var(--text-color-dark);
+    gap: 8px; /* Space between text and the visual switch */
+    user-select: none; /* Prevent text selection on click */
+    position: relative; /* Needed for absolute positioning of input */
+    padding: 5px 0; /* Add some vertical padding if needed */
 }
 
-.favorites-filter-toggle label {
-    cursor: pointer;
-    margin-bottom: 0;
+/* Hide the actual checkbox visually but keep it functional */
+.toggle-switch-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none; /* Not strictly necessary when opacity is 0 */
 }
 
-.favorites-filter-toggle input[type="checkbox"] {
-    cursor: pointer;
-    vertical-align: middle;
-    width: 16px;
-    height: 16px;
+/* Style the visual container (the track) */
+.toggle-switch-visual {
+    display: inline-block;
+    position: relative; /* For positioning the knob */
+    width: 44px; /* Width of the switch track */
+    height: 22px; /* Height of the switch track */
+    background-color: #ccc; /* Default background (off state) */
+    border-radius: 11px; /* Fully rounded ends */
+    transition: background-color 0.3s ease-in-out;
+    flex-shrink: 0; /* Prevent shrinking in flex layout */
 }
 
-body.dark-mode .favorites-filter-toggle {
-    background-color: rgba(255, 255, 255, 0.1);
+/* Style the knob (the circle) using ::after pseudo-element */
+.toggle-switch-visual::after {
+    content: '';
+    position: absolute;
+    top: 2px; /* Positioning within the track */
+    left: 2px; /* Start position (off state) */
+    width: 18px; /* Diameter of the knob */
+    height: 18px; /* Diameter of the knob */
+    background-color: white;
+    border-radius: 50%; /* Make it a circle */
+    transition: transform 0.3s ease-in-out; /* Animate the movement */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Checked State --- */
+
+/* Change track background when checkbox is checked */
+.toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual {
+    background-color: var(--active-bg-color); /* Or use a distinct color like #e44d82 for favorites */
+    /* Example using a favorite-pink: background-color: #e44d82; */
+}
+
+/* Move the knob to the right when checkbox is checked */
+.toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual::after {
+    transform: translateX(22px); /* Moves the knob (Track Width - Knob Width - 2*Offset) = 44 - 18 - 4 = 22 */
+}
+
+/* --- Focus State (Accessibility) --- */
+
+/* Add an outline when the hidden checkbox is focused (e.g., via keyboard) */
+.toggle-switch-label input[type="checkbox"]:focus + .toggle-switch-visual {
+    outline: none; /* Remove default */
+    box-shadow: 0 0 0 3px rgba(53, 121, 133, 0.4); /* Use active color with transparency */
+    /* Example using favorite-pink focus: box-shadow: 0 0 0 3px rgba(228, 77, 130, 0.4); */
+}
+
+/* --- Dark Mode Adjustments --- */
+
+body.dark-mode .toggle-switch-visual {
+    background-color: #555; /* Darker grey for off state */
+}
+
+body.dark-mode .toggle-switch-label input[type="checkbox"]:checked + .toggle-switch-visual {
+    background-color: var(--active-hover-bg-color); /* Use the lighter active color for 'on' state */
+    /* Example using favorite-pink: background-color: #e44d82; */
+}
+
+body.dark-mode .toggle-switch-visual::after {
+    background-color: #ddd; /* Slightly off-white knob */
+}
+
+body.dark-mode .toggle-switch-label input[type="checkbox"]:focus + .toggle-switch-visual {
+    box-shadow: 0 0 0 3px rgba(90, 174, 189, 0.5); /* Use active hover color */
+    /* Example using favorite-pink focus: box-shadow: 0 0 0 3px rgba(228, 77, 130, 0.5); */
+}
+
+/* Optional: Adjust label text color in dark mode if needed */
+body.dark-mode .toggle-switch-label span:first-child { /* Target the text span */
     color: var(--text-color-light);
-}
-
-body.dark-mode .modal-content .favorite-toggle-button {
-    background-color: #5a6268;
-    border-color: #5a6268;
-    color: var(--text-color-light);
-}
-
-body.dark-mode .modal-content .favorite-toggle-button:hover {
-    background-color: #4f575d;
-    border-color: #495057;
-}
-
-body.dark-mode .modal-content .favorite-toggle-button.is-favorite {
-    background-color: #c93066;
-    border-color: #c93066;
-}
-
-body.dark-mode .modal-content .favorite-toggle-button.is-favorite:hover {
-    background-color: #b02857;
-    border-color: #a3244f;
 }
 
 /* rating styling */
