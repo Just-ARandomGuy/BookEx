@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from django.conf import settings
+
 
 class Book(models.Model):
     name = models.CharField(max_length=200)
@@ -23,3 +25,18 @@ class CartItem(models.Model):
 
     def getPrice(self):
         return self.item.price * self.quantity
+
+
+class Rating(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='book_ratings')
+    score = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    class Meta:
+        unique_together = ('book', 'user')
+        indexes = [
+            models.Index(fields=['book', 'user']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.username} rated {self.book.name}: {self.score} stars'

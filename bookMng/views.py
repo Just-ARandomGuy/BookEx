@@ -1,19 +1,14 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.http import JsonResponse
-from django.shortcuts import render
-
-from .models import ShoppingCart, CartItem
-
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, redirect, get_object_or_404
 
 from .forms import BookForm
-from .models import Book
+from .models import Book, Rating, ShoppingCart, CartItem
 
 
 def index(request):
@@ -54,20 +49,34 @@ def postbook(request):
 
 
 def displaybooks(request):
-    books = Book.objects.all()
+    books_qs = Book.objects.all().select_related('username')
+
+    from django.db.models.functions import Coalesce
+    books_qs = books_qs.annotate(
+        average_rating=Coalesce(Avg('ratings__score'), 0.0)
+    )
+
+    user_ratings = {}
+    if request.user.is_authenticated:
+        ratings_qs = Rating.objects.filter(
+            user=request.user,
+            book__in=books_qs
+        ).values('book_id', 'score')
+        user_ratings = {rating['book_id']: rating['score'] for rating in ratings_qs}
+
+    processed_books = []
+    for book in books_qs:
+        book.user_rating_score = user_ratings.get(book.id, None)
+        processed_books.append(book)
 
     context = {
-        'books': books,
+        'books': processed_books,
         'active_nav_item': 'displaybooks'
     }
     return render(request, 'bookMng/displaybooks.html', context)
 
 
 def mybooks(request):
-    # technically not needed anymore since My Books is hidden unless user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     books = Book.objects.filter(username=request.user)
     submitted_flag = request.GET.get('submitted') == 'True'
 
@@ -102,26 +111,6 @@ def booksearch_ajax(request):
         })
 
     return JsonResponse({'books': books_data})
-
-
-# def book_detail(request, book_id):
-#     try:
-#         book = Book.objects.get(id=book_id)
-#
-#     except Book.DoesNotExist:
-#         from django.http import Http404
-#         raise Http404("Book does not exist")
-#
-#     origin = request.GET.get('from', 'displaybooks')
-#     active_nav = 'mybooks' if origin == 'mybooks' else 'displaybooks'
-#
-#     context = {
-#         'book': book,
-#         'active_nav_item': active_nav,
-#         'origin': origin,
-#     }
-#
-#     return render(request, 'bookMng/book_detail.html', context)
 
 
 def get_book_detail_json(request, book_id):
@@ -265,8 +254,48 @@ def update_cart(request):
                 except (ValueError, CartItem.DoesNotExist, IndexError):
                     messages.error(request, f'Error updating quantity for item ID {book_id_str}.'
                                             f' Item might not be in your cart or data is invalid.')
-
-        # if items_updated > 0:
-        #     messages.success(request, f"Cart updated successfully. "
-        #                               f"{items_updated} item quantity(s) changed.")
     return redirect('displayCart')
+
+
+@require_POST
+def rate_book(request, book_id):
+    if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'success': False, 'message': 'Invalid request type.'}, status=400)
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'Authentication required to rate books.'}, status=401)
+
+    try:
+        book = get_object_or_404(Book.objects.select_related('username'), id=book_id)
+
+        if book.username == request.user:
+            return JsonResponse({'success': False, 'message': 'You cannot rate your own books.'}, status=403)
+
+        score_str = request.POST.get('score')
+        if not score_str:
+            return JsonResponse({'success': False, 'message': 'Invalid score.'}, status=400)
+
+        score = int(score_str)
+        if not 1 <= score <= 5:
+            raise ValueError("Invalid score value.")
+
+        rating, created = Rating.objects.update_or_create(
+            book=book,
+            user=request.user,
+            defaults={'score': score}
+        )
+
+        action = "created" if created else "updated"
+        return JsonResponse({
+            'success': True,
+            'message': f"Rating {action} successfully to {score} stars.",
+            'new_rating': score,
+            'book_id': book_id
+        })
+
+    except Book.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Book not found.'}, status=404)
+    except ValueError:
+        return JsonResponse({'success': False, 'error': 'Invalid score value provided.'}, status=400)
+    except Exception as e:
+        print(f"Error rating book: {e}")
+        return JsonResponse({'success': False, 'error': 'An server error occurred.'}, status=500)

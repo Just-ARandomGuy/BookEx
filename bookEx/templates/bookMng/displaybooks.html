@@ -5,6 +5,11 @@
 
 {% block page_title %}Display Books{% endblock %}
 
+{% block page_styles %}
+	<link rel="stylesheet" href="{% static 'css/displaybooks_ratings.css' %}" type="text/css">
+{% endblock page_styles %}
+
+
 {% block content %}
 	<h1>Display Books</h1>
 
@@ -22,6 +27,7 @@
 		<tr>
 			<th>Book Cover</th>
 			<th>Book Name</th>
+			<th>Rating</th>
 			<th>Book Price</th>
 			<th>User Name</th>
 		</tr>
@@ -36,6 +42,42 @@
 				</td>
 				<td>
 					<a href="#" data-book-id="{{ book.id }}"> {{ book.name }} </a>
+				</td>
+				<td>
+					{# logged in and owner of book #}
+					{% if user.is_authenticated and book.username != user %}
+						{% with current_rating=book.user_rating_score %}
+							<div class="star-rating" data-book-id="{{ book.id }}" data-rate-url="{% url 'rate_book' book.id %}">
+								{% for i_loop in "12345" %}
+									{% with star_value=forloop.counter %}
+										<span class="star {% if current_rating >= star_value %}selected{% endif %}" data-value="{{ star_value }}">
+                                            <i class="{% if current_rating >= star_value %}fas fa-star{% else %}far fa-star{% endif %}"></i>
+                                        </span>
+									{% endwith %}
+								{% endfor %}
+							</div>
+							<div class="rating-status" id="status-{{ book.id }}" style="font-size: 0.8em; margin-top: 5px; height: 1em;"></div>
+						{% endwith %}
+
+						{# logged in and not owner of book #}
+					{% else %}
+						{% with avg_rating_raw=book.average_rating %}
+							<div class="star-rating-display-only" title="Average Rating: {{ avg_rating_raw|floatformat:1|default:'N/A' }}">
+								{% for i_loop in "12345" %}
+									{% with star_value=forloop.counter %}
+										<span class="star {% if avg_rating_raw|default_if_none:0 >= star_value %}rated fas fa-star{% else %}far fa-star{% endif %}"></span>
+									{% endwith %}
+								{% endfor %}
+							</div>
+							{% if user.is_authenticated %}
+								<span class="rating-disabled" style="display: block; margin-top: 5px;" title="You cannot rate books you have listed.">Cannot Rate (Own)</span>
+
+								{# not logged in (guest) #}
+							{% else %}
+								<span class="rating-disabled" style="display: block; margin-top: 5px;">(Login to rate)</span>
+							{% endif %}
+						{% endwith %}
+					{% endif %}
 				</td>
 				<td>{{ book.price }}</td>
 				<td>{{ book.username.username }}</td>
@@ -52,6 +94,10 @@
 		</p>
 	{% endif %}
 
-	<script src="{% static 'js/bookSearch.js' %}"></script>
 
 {% endblock content %}
+
+{% block page_scripts %}
+	<script src="{% static 'js/bookSearch.js' %}"></script>
+	<script src="{% static 'js/bookRating.js' %}"></script>
+{% endblock %}
