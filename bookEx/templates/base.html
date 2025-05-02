@@ -66,7 +66,7 @@
 
 <section class="home-section">
 	<div class="text">{% block page_title %}Dashboard{% endblock %}</div>
-	<div class="main-content-area">
+	<div class="main-content-area {% block page_specific_main_class %}{% endblock %}">
 		{% block content %}
 			<p>Welcome to the main content area.</p>
 		{% endblock content %}
@@ -98,5 +98,7 @@
 
 <script src="{% static 'js/themeToggle.js' %}"></script>
 <script src="{% static 'js/modalHandler.js' %}"></script>
+{% block page_scripts %}{% endblock page_scripts %}
+
 </body>
 </html>
