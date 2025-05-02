@@ -1,6 +1,6 @@
 # BookEx
 
-![img.png](https://media.cleanshot.cloud/media/81129/PD1Nuq3r6jSrjZcb7qzkhhk4KGKOdKnpIfx5VFjI.jpeg?Expires=1745790636&Signature=Z7teKznNVOlAbvdtZEP1N8FIXuLJ9-puaEQu2TYX9fD5yGGPojBHJlb0ZHzUXA8ro2YzuzI~7K7~cKpldMR43ziqddDHPM6ixWLtnzqO24f-xGsjC3iU4Cs0VYuAc6jCSBIzDJPp1e9evJxqVpxtyLG8GiezNg9eYNthSTF2pt76-oHFESdEWW~LK8eDkVhbNYTVd8mRRURt1jP-LZ0NGJLdQDgqckQVhK2~TQ-aJJJ60LuLedXCuWo8F30afOCVYxhcB0YIcDOxBJ9BuKfWNdBhEOanQXU0E6NKkInRRA5u7qj~WgcjN-EcsmH9kIm-z3ZefFrZ6sHXqyklQd0Fiw__&Key-Pair-Id=K269JMAT9ZF4GZ)
+![CleanShot 2025-05-01 at 21 31 12@2x](https://github.com/user-attachments/assets/492da97b-6d3f-4321-b512-0594365d06c3)
 
 ## Getting Started (Local Setup)
 
